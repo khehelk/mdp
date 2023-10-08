@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">PetMed</string>
+    <string name="not_auth_error">Please login</string>
+    <string name="placeholder_search">Search…</string>
 </resources>
