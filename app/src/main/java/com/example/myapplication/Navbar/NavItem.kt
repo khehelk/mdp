@@ -1,7 +1,9 @@
 package com.example.myapplication.Navbar
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.example.myapplication.R
 
@@ -20,5 +22,29 @@ sealed class NavItem(
     object Profile : NavItem(
         "profile",
         R.drawable.icon_profile
+    )
+    object ProfileChange : NavItem(
+        "profile_change",
+        R.drawable.icon_profile
+    )
+    object Orders : NavItem(
+        "orders",
+        R.drawable.icon_profile
+    )
+    object ProfileNotAuth : NavItem(
+        "profile_not_auth",
+        R.drawable.icon_profile
+    )
+    object Login : NavItem(
+        "login",
+        R.drawable.icon_profile
+    )
+    object Registration : NavItem(
+        "registration",
+        R.drawable.icon_profile
+    )
+    object AddService : NavItem(
+        "add_service",
+        R.drawable.icon_list_of_services
     )
 }
