@@ -1,7 +1,6 @@
-package com.example.myapplication.Profile
+package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,21 +18,35 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.myapplication.Navbar.NavItem
+import com.example.myapplication.composeui.Navbar.NavItem
+import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.model.User
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.RedBtn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Profile(navController: NavHostController){
+    val context = LocalContext.current
+    val user = remember { mutableStateOf<User?>(null)}
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            user.value = AppDatabase.getInstance(context).userDao().getUserById(2)
+        }
+    }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +64,7 @@ fun Profile(navController: NavHostController){
         }
         Box(modifier = Modifier.padding(15.dp)){
             Text(
-                text = "Name Surname",
+                text = user.value?.name + " " + user.value?.surname,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -60,14 +73,16 @@ fun Profile(navController: NavHostController){
             )
         }
         Box(modifier = Modifier.padding(15.dp)){
-            Text(
-                text = "example@mail.ex",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                textAlign = TextAlign.Center,
-            )
+            user.value?.email?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
         Button(
             onClick = { navController.navigate(NavItem.ProfileChange.route) },

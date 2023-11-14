@@ -1,4 +1,4 @@
-package com.example.myapplication.Profile
+package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
-import com.example.myapplication.UIComponents.MyTextField
+import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueBorder
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn

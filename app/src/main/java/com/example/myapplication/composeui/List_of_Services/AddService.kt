@@ -1,13 +1,7 @@
-package com.example.myapplication.List_of_Services
+package com.example.myapplication.composeui.List_of_Services
 
 import android.content.ContentResolver
-import android.content.Intent
 import android.graphics.BitmapFactory
-import android.provider.MediaStore
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,23 +12,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,17 +34,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.UIComponents.MyTextField
+import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
-import com.example.myapplication.ui.theme.TextSecondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -66,8 +49,6 @@ import kotlinx.coroutines.withContext
 fun AddService (navController: NavController){
     var serviceName = ""
     var price = ""
-    var animals = ""
-    val availableAnimals = listOf("Dogs", "Cats")
     var expanded by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
@@ -112,19 +93,12 @@ fun AddService (navController: NavController){
                         .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
                     verticalArrangement = Arrangement.Top,
                 ){
-                    var animalsString = ""
                     serviceName?.let {
                         Text(
                             text = it,
                             color = TextPrimary,
                             style = MaterialTheme.typography.bodyMedium)
                     }
-                    animals?.forEach { animal -> animalsString += "$animal, " }
-                    Text(
-                        text = animalsString,
-                        color = TextSecondary,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 }
                 Column(
                     modifier = Modifier
@@ -146,18 +120,6 @@ fun AddService (navController: NavController){
                 MyTextField(label = "Service name"){
                     newValue ->
                     serviceName = newValue
-                }
-            }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    availableAnimals.forEach {
-                        DropdownMenuItem(onClick = { animals += "$it, " }) {
-                            Text(it)
-                        }
-                    }
                 }
             }
             Row (modifier = Modifier.padding(vertical = 5.dp)){

@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlin.collections.ArrayList
 
 data class TestServiceItem(
     val image: Int,
@@ -43,17 +42,8 @@ data class TestServiceItem(
 
 fun getServices(): List<TestServiceItem>{
     return listOf(
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats","Dogs", "Cats","Dogs", "Cats","Dogs", "Cats","Dogs", "Cats","Dogs", "Cats","Dogs", "Cats",), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
-        TestServiceItem(R.drawable.image_service, "Inoculation", arrayListOf("Dogs", "Cats"), 20.0),
+
     )
+
+
 }

@@ -1,25 +1,26 @@
-package com.example.myapplication.Navbar
+package com.example.myapplication.composeui.Navbar
 
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.Basket.Basket
-import com.example.myapplication.List_of_Services.AddService
-import com.example.myapplication.List_of_Services.ListOfServices
-import com.example.myapplication.Orders.Orders
-import com.example.myapplication.Profile.Login
-import com.example.myapplication.Profile.Profile
-import com.example.myapplication.Profile.ProfileChange
-import com.example.myapplication.Profile.ProfileNotAuth
-import com.example.myapplication.Profile.Registration
+import com.example.myapplication.composeui.Basket.Basket
+import com.example.myapplication.composeui.List_of_Services.AddService
+import com.example.myapplication.composeui.List_of_Services.ListOfServices
+import com.example.myapplication.composeui.Orders.Orders
+import com.example.myapplication.composeui.Profile.Login
+import com.example.myapplication.composeui.Profile.Profile
+import com.example.myapplication.composeui.Profile.ProfileChange
+import com.example.myapplication.composeui.Profile.ProfileNotAuth
+import com.example.myapplication.composeui.Profile.Registration
 
 @Composable
 fun NavController(navController : NavHostController){
     NavHost(
         navController = navController,
-        startDestination = NavItem.Profile.route
+        startDestination = NavItem.ListOfServices.route,
+
     ){
         composable(
             NavItem.ListOfServices.route

@@ -1,4 +1,4 @@
-package com.example.myapplication.Navbar
+package com.example.myapplication.composeui.Navbar
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -67,26 +67,32 @@ fun NavBar(){
                 .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
         ){
             val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
+            val currentDestination = navBackStackEntry
 
             items.forEach { screen ->
+                val isSelected = currentDestination?.destination?.route == screen.route
+
                 BottomNavigationItem(
+                    selected = isSelected,
                     icon = {
                         Icon(painterResource(screen.icon),
                         null,
                         modifier = Modifier,
                         GreenBtn)
                     },
-                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                     modifier = Modifier
                         .padding(15.dp),
                     onClick = {
                         navController.navigate(screen.route){
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                            if (!isSelected) {
+                                navController.graph.startDestinationRoute?.let {
+                                    navController.popBackStack(it, inclusive = true)
+                                }
+                                navController.navigate(screen.route) {
+                                    launchSingleTop
+                                }
                             }
-                            launchSingleTop = true
-                            restoreState = true
+                            navController.navigate(screen.route)
                         }
                     }
                 )

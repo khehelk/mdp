@@ -1,4 +1,4 @@
-package com.example.myapplication.Profile
+package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.Navbar.NavItem
+import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 

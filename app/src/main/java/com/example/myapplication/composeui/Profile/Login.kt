@@ -1,4 +1,4 @@
-package com.example.myapplication.Profile
+package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,14 +24,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.Navbar.NavItem
-import com.example.myapplication.UIComponents.MyTextField
+import com.example.myapplication.composeui.Navbar.NavItem
+import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextSecondary
 
 @Composable
-fun Registration (navController: NavController){
+fun Login (navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +45,7 @@ fun Registration (navController: NavController){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 30.dp),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Center
         ){
             Text(
                 text = "PetMed",
@@ -55,16 +55,14 @@ fun Registration (navController: NavController){
         }
         Column (
         ){
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Name", onValueChanged = {})
-            }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Surname", onValueChanged = {})
-            }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
+            Row (modifier = Modifier
+                .padding(vertical = 5.dp)
+            ){
                 MyTextField(label = "Email", onValueChanged = {})
             }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
+            Row (modifier = Modifier
+                .padding(vertical = 5.dp)
+            ){
                 MyTextField(label = "Password", onValueChanged = {})
             }
         }
@@ -82,25 +80,27 @@ fun Registration (navController: NavController){
             contentPadding = PaddingValues(0.dp),
         ) {
             Text(
-                text = "Registration",
+                text = "Login",
                 style = MaterialTheme.typography.bodyMedium
                     .copy(Color.White)
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ){
             Text(
-                text = "Already have a account? ",
+                text = "Don't have an account? ",
                 style = MaterialTheme.typography.bodyMedium
                     .copy(TextSecondary)
             )
             Text(
-                text = "Login",
+                text = "Sign up",
                 style = MaterialTheme.typography.bodyMedium
                     .copy(GreenBtn),
-                modifier = Modifier.clickable { navController.navigate(NavItem.Login.route) }
+                modifier = Modifier
+                    .clickable { navController.navigate(NavItem.Registration.route) }
             )
         }
     }

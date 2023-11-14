@@ -1,10 +1,6 @@
-package com.example.myapplication.Navbar
+package com.example.myapplication.composeui.Navbar
 
 import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import com.example.myapplication.R
 
 sealed class NavItem(
