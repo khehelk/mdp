@@ -9,16 +9,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c94e195-a540-483e-9a1c-11797aeb1741" name="Changes" comment="feature: lab3 is done">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/BasketRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/OrderRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/ServiceRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/UserRepository.kt" afterDir="false" />
+    <list default="true" id="7c94e195-a540-483e-9a1c-11797aeb1741" name="Changes" comment="feature: lab4 add repos">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/viewmodel/OrderViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/viewmodel/ServiceViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/viewmodel/UserViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/BasketDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/BasketDao.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/OrderDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/OrderDao.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/ServiceDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/ServiceDao.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/UserDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/dao/UserDao.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/OrderRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/myapplication/repository/OrderRepository.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -291,7 +288,14 @@
       <option name="project" value="LOCAL" />
       <updated>1699948377847</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feature: lab4 add repos">
+      <created>1700908930838</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1700908930838</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -309,6 +313,7 @@
     <MESSAGE value="empty activity test" />
     <MESSAGE value="feature: UI, lab2 maybe done" />
     <MESSAGE value="feature: lab3 is done" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature: lab3 is done" />
+    <MESSAGE value="feature: lab4 add repos" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: lab4 add repos" />
   </component>
 </project>

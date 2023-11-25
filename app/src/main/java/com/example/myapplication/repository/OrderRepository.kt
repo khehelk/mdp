@@ -10,4 +10,5 @@ class OrderRepository(private val orderDao: OrderDao) {
     suspend fun delete(order: Order) = orderDao.delete(order)
     suspend fun getOrderWithServices(id: Int) = orderDao.getOrderWithServices(id)
     suspend fun getAllOrders() = orderDao.getAllOrders()
+    suspend fun getUserOrders(id: Int) = orderDao.getUserOrders(id)
 }

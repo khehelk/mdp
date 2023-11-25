@@ -9,5 +9,4 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun delete(user: User) = userDao.delete(user)
     suspend fun getUserById(id: Int) = userDao.getUserById(id)
     suspend fun getUserByEmail(email: String) = userDao.getUserByEmail(email)
-    suspend fun getUserByEmail(id: Int) = userDao.getUserOrders(id)
 }

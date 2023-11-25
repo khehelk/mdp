@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
 import com.example.myapplication.model.OrderWithServices
+import com.example.myapplication.model.UserWithOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,4 +22,6 @@ interface OrderDao {
     suspend fun getOrderWithServices(id: Int): Flow<OrderWithServices>
     @Query("SELECT * FROM tbl_order")
     suspend fun getAllOrders(): Flow<List<Order>>
+    @Query("SELECT * FROM tbl_user WHERE userId =:id")
+    suspend fun getUserOrders(id: Int) : Flow<UserWithOrder>
 }
