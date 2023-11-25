@@ -11,19 +11,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrderDao {
-
     @Insert
-    suspend fun createOrder(order: Order):Long
-
-    @Insert
-    suspend fun insertOrderService(orderService: OrderService)
-
-    @Query("SELECT * FROM tbl_order WHERE orderId = :id")
-    fun getOrderWithServices(id: Int): Flow<OrderWithServices>
-
-    @Query("SELECT * FROM tbl_order")
-    fun getAllOrder(): Flow<List<Order>>
-
+    suspend fun insert(order: Order):Long
     @Delete
     suspend fun delete(order: Order)
+    @Insert
+    suspend fun insertOrderService(orderService: OrderService)
+    @Query("SELECT * FROM tbl_order WHERE orderId = :id")
+    suspend fun getOrderWithServices(id: Int): Flow<OrderWithServices>
+    @Query("SELECT * FROM tbl_order")
+    suspend fun getAllOrders(): Flow<List<Order>>
 }

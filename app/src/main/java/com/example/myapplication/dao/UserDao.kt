@@ -12,20 +12,20 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
     @Insert
-    suspend fun createUser(user: User)
+    suspend fun insert(user: User)
 
     @Update
-    suspend fun updateUser(user: User)
+    suspend fun update(user: User)
 
     @Delete
-    suspend fun deleteUser(user: User)
+    suspend fun delete(user: User)
 
     @Query("SELECT * FROM tbl_user WHERE userId = :id")
-    fun getUserById(id: Int): User
+    suspend fun getUserById(id: Int): User
 
     @Query("SELECT * FROM tbl_user WHERE email = :email")
-    fun getUserByEmail(email: String): User
+    suspend fun getUserByEmail(email: String): User
 
     @Query("SELECT * FROM tbl_user WHERE userId =:id")
-    fun getUserOrders(id: Int) : Flow<UserWithOrder>
+    suspend fun getUserOrders(id: Int) : Flow<UserWithOrder>
 }

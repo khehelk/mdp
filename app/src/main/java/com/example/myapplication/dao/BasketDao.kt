@@ -11,19 +11,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BasketDao {
-
     @Insert
-    suspend fun createBasket(basket: Basket):Long
-
+    suspend fun insert(basket: Basket):Long
     @Insert
     suspend fun insertBasketService(basketService: BasketService)
-
     @Query("SELECT * FROM tbl_basket WHERE creatorUserId = :id")
-    fun getBasketWithServices(id: Int): Flow<BasketWithServices>
-
+    suspend fun getBasketWithServices(id: Int): Flow<BasketWithServices>
     @Query("SELECT * FROM tbl_basket")
-    fun getAllBasket(): Flow<List<Basket>>
-
+    suspend fun getAllBaskets(): Flow<List<Basket>>
     @Delete
     suspend fun delete(basket: Basket)
 }
