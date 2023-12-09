@@ -12,15 +12,15 @@ import com.example.myapplication.composeui.Orders.Orders
 import com.example.myapplication.composeui.Profile.Login
 import com.example.myapplication.composeui.Profile.Profile
 import com.example.myapplication.composeui.Profile.ProfileChange
-import com.example.myapplication.composeui.Profile.ProfileNotAuth
 import com.example.myapplication.composeui.Profile.Registration
+import com.example.myapplication.model.Service
+import com.google.gson.Gson
 
 @Composable
 fun NavController(navController : NavHostController){
     NavHost(
         navController = navController,
         startDestination = NavItem.ListOfServices.route,
-
     ){
         composable(
             NavItem.ListOfServices.route
@@ -28,60 +28,43 @@ fun NavController(navController : NavHostController){
             ListOfServices(navController)
         }
         composable(
-//            "${NavItem.Basket.route}/{userId}"
-            "${NavItem.Basket.route}"
+            NavItem.Basket.route
         ){
             Basket(navController)
-//            backStackEntry ->
-//            backStackEntry.arguments?.getString("userId")?.let {
-//                Basket(
-//                    navController,
-//                    it.toLong()
-//                )
-//            }
         }
         composable(
-//            "${NavItem.Profile.route}/{userId}"
-            "${NavItem.Profile.route}"
+            NavItem.Profile.route
         ){
             Profile(navController)
-//            backStackEntry ->
-//            backStackEntry.arguments?.getString("userId")?.let {
-//                Profile(
-//                    navController,
-//                    it.toLong()
-//                )
-//            }
         }
         composable(
-            "${NavItem.ProfileChange.route}"
+            NavItem.ProfileChange.route
         ){
             ProfileChange(navController)
         }
         composable(
-            "${NavItem.Orders.route}"
+            NavItem.Orders.route
         ){
             Orders(navController)
         }
         composable(
-            "${NavItem.ProfileNotAuth.route}"
-        ){
-            ProfileNotAuth(navController)
-        }
-        composable(
-            "${NavItem.Login.route}"
+            NavItem.Login.route
         ){
             Login(navController)
         }
         composable(
-            "${NavItem.Registration.route}"
+            NavItem.Registration.route
         ){
             Registration(navController)
         }
         composable(
-            "${NavItem.AddService.route}"
+            NavItem.AddService.route
         ){
-            AddService(navController)
+                backStackEntry ->
+            val serviceItemString = backStackEntry.arguments?.getString("serviceItem")
+            val serviceItem = Gson().fromJson(serviceItemString, Service::class.java)
+            serviceItem?.let { AddService(navController, it)
+            }
         }
     }
 }

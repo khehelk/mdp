@@ -16,6 +16,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,15 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextSecondary
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun Registration (navController: NavController){
+fun Registration (navController: NavController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,20 +63,50 @@ fun Registration (navController: NavController){
         Column (
         ){
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Name", onValueChanged = {})
+                MyTextField(label = "Name", onValueChanged = { userViewModel.name.value = it })
             }
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Surname", onValueChanged = {})
+                MyTextField(label = "Surname", onValueChanged = { userViewModel.surname.value = it })
             }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Email", onValueChanged = {})
+            var isEmailValid by remember { mutableStateOf(true) }
+            var isPasswordValid by remember { mutableStateOf(true) }
+
+            if (!isEmailValid) {
+                Text(
+                    text = "Invalid email format",
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(Color.Red, fontSize = TextUnit(4.0f, TextUnitType.Em))
+                )
             }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Password", onValueChanged = {})
+            Row (modifier = Modifier
+                .padding(vertical = 5.dp)
+            ){
+                MyTextField(label = "Email", onValueChanged = {
+                    userViewModel.email.value = it
+                    isEmailValid = userViewModel.isValidEmail()
+                })
+            }
+            if (!isPasswordValid) {
+                Text(
+                    text = "Password is required",
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(Color.Red, fontSize = TextUnit(4.0f, TextUnitType.Em))
+                )
+            }
+            Row (modifier = Modifier
+                .padding(vertical = 5.dp)
+            ){
+                MyTextField(label = "Password", onValueChanged = {
+                    userViewModel.password.value = it
+                    isPasswordValid = it.isNotEmpty()
+                })
             }
         }
         Button(
-            onClick = { navController.navigate(NavItem.ListOfServices.route)},
+            onClick = {
+                userViewModel.createUser()
+                navController.navigate(NavItem.Login.route)
+            },
             modifier = Modifier
                 .height(60.dp)
                 .padding(top = 10.dp)

@@ -1,12 +1,11 @@
 package com.example.myapplication.model
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "tbl_basket_service")
+@Entity(tableName = "tbl_basket_service",
+        primaryKeys = ["basketId", "serviceId"])
 data class BasketService(
-    @PrimaryKey(autoGenerate = true)
-    val basketServiceId: Int? = null,
     val basketId: Int,
     val serviceId: Int,
+    val quantity: Int
 )

@@ -1,6 +1,5 @@
 package com.example.myapplication.composeui.Basket
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -20,42 +17,34 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.myapplication.R
-import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.GlobalUser
+import com.example.myapplication.composeui.Profile.Login
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlin.math.roundToInt
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.BasketViewModel
+import com.example.myapplication.viewmodel.OrderViewModel
 
 @Composable
-fun Basket(navController : NavHostController){
-    val basketList = remember { mutableStateMapOf<Service, Int>() }
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            AppDatabase.getInstance(context).basketDao().getBasketWithServices(1).collect { data ->
-                basketList.clear()
-                for (item in data.services){
-                    basketList[item] = (basketList[item] ?: 0) + 1
-                }
-            }
-        }
-    }
+fun Basket(navController : NavHostController, basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory), orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    val user = GlobalUser.getInstance().getUser()
+
+    if (user == null){
+        Login(navController = navController)
+    }else{
+        basketViewModel.updateSubTotal(user.userId!!)
+        val total = basketViewModel.total.value
+        val basketList by basketViewModel.getBasketServices(user.userId).collectAsState(initial = null)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,19 +53,11 @@ fun Basket(navController : NavHostController){
             .padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.icon_calendar),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(5.dp)
-        )
-        LazyColumn {
-            items(basketList.toList()) { (service, count) ->
-                key(service.serviceId) {
-                    BasketItemUI(service, count){ newCount ->
-                        basketList[service] = newCount
-                    }
-                }
+        val serviceList: List<Service>? = basketList?.services
+        if (serviceList != null){
+            orderViewModel.updateSelectedItems(serviceList)
+            for (item in serviceList){
+                BasketItemUI(item = item)
             }
         }
         Box(modifier = Modifier
@@ -99,26 +80,15 @@ fun Basket(navController : NavHostController){
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        text = (getTotalPrice(basketList)).toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ){
-                    Text(
-                        text = "Date:",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        text = "11.11.2023:",
+                        text = "$$total",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    orderViewModel.createOrder()
+                },
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
@@ -135,11 +105,4 @@ fun Basket(navController : NavHostController){
         }
     }
 }
-
-fun getTotalPrice(basketList: SnapshotStateMap<Service, Int>): Double {
-    var price = 0.00
-    for (item in basketList){
-        price += item.key.price * item.value
-    }
-    return (price*100).roundToInt() / 100.0
 }

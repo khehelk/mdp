@@ -27,10 +27,6 @@ sealed class NavItem(
         "orders",
         R.drawable.icon_profile
     )
-    object ProfileNotAuth : NavItem(
-        "profile_not_auth",
-        R.drawable.icon_profile
-    )
     object Login : NavItem(
         "login",
         R.drawable.icon_profile
@@ -40,7 +36,7 @@ sealed class NavItem(
         R.drawable.icon_profile
     )
     object AddService : NavItem(
-        "add_service",
+        "add_service/{serviceItem}",
         R.drawable.icon_list_of_services
     )
 }

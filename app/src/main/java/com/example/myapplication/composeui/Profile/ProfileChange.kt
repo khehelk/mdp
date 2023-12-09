@@ -1,8 +1,6 @@
 package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,11 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,28 +20,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.myapplication.GlobalUser
 import com.example.myapplication.R
+import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
-import com.example.myapplication.ui.theme.BlueBorder
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
-import com.example.myapplication.ui.theme.TextSecondary
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun ProfileChange (navController: NavHostController){
+fun ProfileChange (navController: NavHostController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    val user = GlobalUser.getInstance().getUser()
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +67,7 @@ fun ProfileChange (navController: NavHostController){
         }
         Box(modifier = Modifier.padding(15.dp)){
             Text(
-                text = "Name Surname",
+                text = "${user?.name} ${user?.surname}",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,7 +77,7 @@ fun ProfileChange (navController: NavHostController){
         }
         Box(modifier = Modifier.padding(15.dp)){
             Text(
-                text = "example@mail.ex",
+                text = "${user?.email}",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,23 +88,48 @@ fun ProfileChange (navController: NavHostController){
         Column (
         ){
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Name", onValueChanged = {})
+                MyTextField(label = "Name", onValueChanged = {userViewModel.name.value = it})
             }
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Surname", onValueChanged = {})
+                MyTextField(label = "Surname", onValueChanged = {userViewModel.surname.value = it})
+            }
+            var isEmailValid by remember { mutableStateOf(true) }
+            var isPasswordValid by remember { mutableStateOf(true) }
+
+            if (!isEmailValid) {
+                Text(
+                    text = "Invalid email format",
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(Color.Red, fontSize = TextUnit(4.0f, TextUnitType.Em))
+                )
+            }
+            Row (modifier = Modifier
+                .padding(vertical = 5.dp)
+            ){
+                MyTextField(label = "Email", onValueChanged = {
+                    userViewModel.email.value = it
+                    isEmailValid = userViewModel.isValidEmail()
+                })
+            }
+            if (!isPasswordValid) {
+                Text(
+                    text = "Password is required",
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(Color.Red, fontSize = TextUnit(4.0f, TextUnitType.Em))
+                )
             }
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Email", onValueChanged = {})
-            }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Old password", onValueChanged = {})
-            }
-            Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "New password", onValueChanged = {})
+                MyTextField(label = "Password", onValueChanged = {
+                    userViewModel.password.value = it
+                    isPasswordValid = it.isNotEmpty()
+                })
             }
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                userViewModel.updateUser()
+                navController.navigate(NavItem.Profile.route)
+            },
             modifier = Modifier
                 .height(60.dp)
                 .padding(top = 10.dp)

@@ -18,35 +18,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.myapplication.GlobalUser
 import com.example.myapplication.composeui.Navbar.NavItem
-import com.example.myapplication.database.AppDatabase
-import com.example.myapplication.model.User
+import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.RedBtn
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun Profile(navController: NavHostController){
-    val context = LocalContext.current
-    val user = remember { mutableStateOf<User?>(null)}
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            user.value = AppDatabase.getInstance(context).userDao().getUserById(2)
-        }
-    }
+    val user = GlobalUser.getInstance().getUser()
+    if(user == null){
+        Login(navController = navController)
+    }else{
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -62,20 +53,9 @@ fun Profile(navController: NavHostController){
         ){
             // TODO: upload profile image
         }
-        Box(modifier = Modifier.padding(15.dp)){
-            Text(
-                text = user.value?.name + " " + user.value?.surname,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                textAlign = TextAlign.Center,
-            )
-        }
-        Box(modifier = Modifier.padding(15.dp)){
-            user.value?.email?.let {
+            Box(modifier = Modifier.padding(15.dp)){
                 Text(
-                    text = it,
+                    text = user.name + " " + user.surname,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -83,7 +63,17 @@ fun Profile(navController: NavHostController){
                     textAlign = TextAlign.Center,
                 )
             }
-        }
+            Box(modifier = Modifier.padding(15.dp)){
+                Text(
+                    text = user.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        
         Button(
             onClick = { navController.navigate(NavItem.ProfileChange.route) },
             modifier = Modifier
@@ -122,27 +112,32 @@ fun Profile(navController: NavHostController){
                 color = Color.White
             )
         }
-        Button(
-            onClick = { navController.navigate(NavItem.AddService.route) },
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth()
-                .clip(CircleShape)
-                .padding(vertical = 5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = GreenBtn,
-                contentColor = Color.White
-            ),
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            Text(
-                text = "Add service",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
-            )
+        if(user.role == RoleEnum.Admin){
+            Button(
+                onClick = { navController.navigate("add_service/{}") },
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clip(CircleShape)
+                    .padding(vertical = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = GreenBtn,
+                    contentColor = Color.White
+                ),
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                Text(
+                    text = "Add service",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
+                )
+            }
         }
         Button(
-            onClick = { navController.navigate(NavItem.ProfileNotAuth.route) },
+            onClick = {
+                GlobalUser.getInstance().setUser(null)
+                navController.navigate(NavItem.Login.route)
+            },
             modifier = Modifier
                 .height(60.dp)
                 .fillMaxWidth()
@@ -166,4 +161,5 @@ fun Profile(navController: NavHostController){
             )
         }
     }
+}
 }

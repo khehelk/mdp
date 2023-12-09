@@ -1,7 +1,6 @@
 package com.example.myapplication.composeui.List_of_Services
 
-import android.content.ContentResolver
-import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,44 +11,47 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
+import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.ServiceViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AddService (navController: NavController){
-    var serviceName = ""
-    var price = ""
-    var expanded by remember { mutableStateOf(false) }
+fun AddService (navController: NavController, service: Service, serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    val create = service.serviceId == null
+    LaunchedEffect(Dispatchers.Default){
+        if(!create){
+            serviceViewModel.service.value.serviceId = service.serviceId
+            serviceViewModel.service.value.photo = service.photo
+        }
+    }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -77,15 +79,29 @@ fun AddService (navController: NavController){
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ){
-               /* Image(
-                    bitmap = selectedImage!!,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .heightIn(min = 100.dp)
-                        .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
-                    contentScale = ContentScale.FillHeight,
-                )*/
+                if(create){
+                    Image(
+                        painter = painterResource(id = serviceViewModel.photo.intValue),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .heightIn(min = 100.dp)
+                            .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
+                        contentScale = ContentScale.FillHeight,
+                    )
+                }else{
+                    service.photo?.let { painterResource(id = it) }?.let {
+                        Image(
+                            painter = it,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .heightIn(min = 100.dp)
+                                .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
+                            contentScale = ContentScale.FillHeight,
+                        )
+                    }
+                }
 
                 Column(
                     modifier = Modifier
@@ -93,9 +109,14 @@ fun AddService (navController: NavController){
                         .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
                     verticalArrangement = Arrangement.Top,
                 ){
-                    serviceName?.let {
+                    if(create){
                         Text(
-                            text = it,
+                            text = serviceViewModel.name.value,
+                            color = TextPrimary,
+                            style = MaterialTheme.typography.bodyMedium)
+                    }else{
+                        Text(
+                            text = service.name,
                             color = TextPrimary,
                             style = MaterialTheme.typography.bodyMedium)
                     }
@@ -107,25 +128,42 @@ fun AddService (navController: NavController){
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ){
-                    Text(
-                        text = "${price}$",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    if(create){
+                        Text(
+                            text = serviceViewModel.price.doubleValue.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }else{
+                        Text(
+                            text = service.price.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
         }
         Column (
         ){
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Service name"){
-                    newValue ->
-                    serviceName = newValue
+                if(create){
+                    MyTextField(label = "Service name"){
+                        serviceViewModel.name.value = it
+                    }
+                }else{
+                    MyTextField(label = service.name){
+                        serviceViewModel.service.value.name = it
+                    }
                 }
             }
             Row (modifier = Modifier.padding(vertical = 5.dp)){
-                MyTextField(label = "Price"){
-                    newValue ->
-                    price = newValue
+                if(create){
+                    MyTextField(label = "Price"){
+                        serviceViewModel.price.doubleValue = it.toDouble()
+                    }
+                }else{
+                    MyTextField(label = service.price.toString()){
+                        serviceViewModel.service.value.price = it.toDouble()
+                    }
                 }
             }
         }
@@ -149,7 +187,11 @@ fun AddService (navController: NavController){
         }
         Button(
             onClick = {
-
+                if (create)
+                    serviceViewModel.createService()
+                else
+                    serviceViewModel.service.let { serviceViewModel.updateService() }
+                navController.navigate(NavItem.ListOfServices.route)
             },
             modifier = Modifier
                 .height(60.dp)
@@ -162,15 +204,11 @@ fun AddService (navController: NavController){
             ),
             contentPadding = PaddingValues(0.dp),
         ) {
-            Text(text = "Add service", style = MaterialTheme.typography.bodyMedium.copy(Color.White))
+            if(create) {
+                Text(text = "Add service", style = MaterialTheme.typography.bodyMedium.copy(Color.White))
+            }else{
+                Text(text = "Update service", style = MaterialTheme.typography.bodyMedium.copy(Color.White))
+            }
         }
-    }
-}
-
-private suspend fun loadSelectedImage(uri: android.net.Uri, contentResolver: ContentResolver): ImageBitmap {
-    return withContext(Dispatchers.IO) {
-        val inputStream = contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        bitmap.asImageBitmap()
     }
 }

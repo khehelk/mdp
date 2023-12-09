@@ -1,5 +1,6 @@
 package com.example.myapplication.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -20,8 +21,9 @@ interface ServiceDao {
     suspend fun delete(service: Service)
 
     @Query("SELECT*FROM tbl_service")
-    suspend fun getAllServices(): Flow<List<Service>>
-
+    fun getAllServices(): Flow<List<Service>>
+    @Query("SELECT*FROM tbl_service")
+    fun getAllServicesPaged(): PagingSource<Int, Service>
     @Query("SELECT * FROM tbl_service WHERE serviceId = :id")
     suspend fun getServiceById(id: Int): Service
 }

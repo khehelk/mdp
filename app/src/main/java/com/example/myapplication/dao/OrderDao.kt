@@ -19,9 +19,9 @@ interface OrderDao {
     @Insert
     suspend fun insertOrderService(orderService: OrderService)
     @Query("SELECT * FROM tbl_order WHERE orderId = :id")
-    suspend fun getOrderWithServices(id: Int): Flow<OrderWithServices>
+    fun getOrderWithServices(id: Int): Flow<OrderWithServices>
     @Query("SELECT * FROM tbl_order")
-    suspend fun getAllOrders(): Flow<List<Order>>
+    fun getAllOrders(): Flow<List<Order>>
     @Query("SELECT * FROM tbl_user WHERE userId =:id")
-    suspend fun getUserOrders(id: Int) : Flow<UserWithOrder>
+    fun getUserOrders(id: Int) : Flow<UserWithOrder>
 }

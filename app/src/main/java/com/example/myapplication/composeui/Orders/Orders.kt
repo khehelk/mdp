@@ -11,24 +11,26 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.GlobalUser
 import com.example.myapplication.model.Order
 import com.example.myapplication.ui.theme.BlueMain
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.OrderViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun Orders (navController: NavController){
+fun Orders (navController: NavController, orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     val ordersList = remember { mutableStateListOf<Order>() }
-    val context = LocalContext.current
+    val user = GlobalUser.getInstance().getUser()
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            AppDatabase.getInstance(context).orderDao().getAllOrder().collect { data ->
+            orderViewModel.getUserOrders(user?.userId!!).collect { data ->
                 ordersList.clear()
-                ordersList.addAll(data)
+                ordersList.addAll(data.orders)
             }
         }
     }

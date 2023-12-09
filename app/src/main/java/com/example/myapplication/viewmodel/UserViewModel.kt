@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.GlobalUser
 import com.example.myapplication.R
+import com.example.myapplication.model.Basket
 import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.User
+import com.example.myapplication.repository.BasketRepository
 import com.example.myapplication.repository.UserRepository
 import kotlinx.coroutines.launch
 
-class UserViewModel(private val userRepository: UserRepository): ViewModel() {
+class UserViewModel(private val userRepository: UserRepository, private val basketRepository: BasketRepository): ViewModel() {
     var name = mutableStateOf("")
     var surname = mutableStateOf("")
     var email = mutableStateOf("")
@@ -19,7 +21,7 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel() {
     var photo = mutableIntStateOf(R.drawable.icon_profile)
 
     fun createUser() = viewModelScope.launch {
-        val user = User(
+        var user = User(
             name = name.value,
             surname = surname.value,
             email = email.value,
@@ -31,13 +33,41 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel() {
 
     fun authUser() = viewModelScope.launch {
         val user = userRepository.getUserByEmail(email.value)
-        if(!password.value.isEmpty() and (user.password == password.value)){
+        if(password.value.isNotEmpty() && user.password == password.value){
             val globalUser = GlobalUser.getInstance()
             globalUser.setUser(user)
+            val basket = basketRepository.getUsersBasket(user.userId!!)
+            if(basket == null){
+                basketRepository.createBasket(Basket(null, user.userId))
+            }
         }
     }
 
-    fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    fun updateUser() = viewModelScope.launch {
+        var updateUser = GlobalUser.getInstance().getUser()
+        if(email.value != "")
+            updateUser?.email = email.value
+        else
+            updateUser?.email = updateUser?.email.toString()
+        if(name.value != "")
+            updateUser?.name = name.value
+        else
+            updateUser?.name = updateUser?.name.toString()
+        if(surname.value != "")
+            updateUser?.surname = surname.value
+        else
+            updateUser?.surname = updateUser?.surname.toString()
+        if(password.value != "")
+            updateUser?.password = password.value
+        else
+            updateUser?.password = updateUser?.password.toString()
+        //updateUser?.photo =
+        if (updateUser != null) {
+            userRepository.update(updateUser)
+        }
+    }
+
+    fun isValidEmail(): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()
     }
 }

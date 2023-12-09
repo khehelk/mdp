@@ -28,7 +28,7 @@ import com.example.myapplication.ui.theme.TextSecondary
 @Composable
 fun MyTextField (
     label: String,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
 ){
     val textState = remember { mutableStateOf(TextFieldValue()) }
     val text by rememberUpdatedState(newValue = textState.value)
@@ -46,13 +46,16 @@ fun MyTextField (
         if(textState.value.text.isEmpty()){
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary)
+                style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
             )
+        }else{
+
         }
         BasicTextField(
             value = text,
-            onValueChange = { newValue ->
-                textState.value = newValue
+            onValueChange = {
+                textState.value = it
+                onValueChanged(it.text)
             },
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium,

@@ -27,5 +27,5 @@ interface UserDao {
     suspend fun getUserByEmail(email: String): User
 
     @Query("SELECT * FROM tbl_user WHERE userId =:id")
-    suspend fun getUserOrders(id: Int) : Flow<UserWithOrder>
+    fun getUserOrders(id: Int) : Flow<UserWithOrder>
 }

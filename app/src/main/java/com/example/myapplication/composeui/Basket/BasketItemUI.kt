@@ -21,10 +21,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,14 +35,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.GlobalUser
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.BasketViewModel
+import com.example.myapplication.viewmodel.OrderViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun BasketItemUI(item: Service, count: Int, onCountChanged: (newCount: Int) -> Unit
-) {
+fun BasketItemUI(item: Service, basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory), orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    val userId = GlobalUser.getInstance().getUser()?.userId!!
+    val basketStateId = remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            basketStateId.value = basketViewModel.getUsersBasket(userId).basketId!!
+        }
+    }
 
+    val quantityState by basketViewModel.getQuantityState(basketStateId.value, item.serviceId!!).collectAsState()
     Box(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
@@ -99,16 +114,14 @@ fun BasketItemUI(item: Service, count: Int, onCountChanged: (newCount: Int) -> U
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    var num by remember { mutableIntStateOf(count) }
                     Text(
-                        text = num.toString(),
+                        text = "$quantityState",
                         color = TextPrimary
                     )
                     Column(verticalArrangement = Arrangement.SpaceAround) {
                         Button(
                             onClick = {
-                                num += 1
-                                onCountChanged(num)
+                                basketViewModel.incrementQuantity(basketStateId.intValue, item.serviceId!!)
                             },
                             modifier = Modifier
                                 .size(42.dp)
@@ -124,8 +137,10 @@ fun BasketItemUI(item: Service, count: Int, onCountChanged: (newCount: Int) -> U
                         }
                         Button(
                             onClick = {
-                                num -= 1
-                                onCountChanged(num)
+                                if (quantityState == 1) basketViewModel.deleteServiceFromBasket(basketStateId.intValue,
+                                    item.serviceId!!
+                                )
+                                basketViewModel.decrementQuantity(basketStateId.intValue, item.serviceId!!)
                             },
                             modifier = Modifier
                                 .size(42.dp)

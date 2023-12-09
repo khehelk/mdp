@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.myapplication.R
 import com.example.myapplication.model.Service
 import com.example.myapplication.repository.ServiceRepository
@@ -14,7 +15,8 @@ class ServiceViewModel(private val serviceRepository: ServiceRepository): ViewMo
     var name = mutableStateOf("")
     var price = mutableDoubleStateOf(0.00)
     var photo = mutableIntStateOf(R.drawable.image_service)
-    var service: Service? = null
+    var service = mutableStateOf<Service>(Service(null,"", 0.0, null))
+    val serviceList = serviceRepository.call().cachedIn(viewModelScope)
 
     fun createService() = viewModelScope.launch {
         val service = Service(
@@ -25,8 +27,8 @@ class ServiceViewModel(private val serviceRepository: ServiceRepository): ViewMo
         serviceRepository.insert(service)
     }
 
-    fun updateService(service: Service) = viewModelScope.launch {
-        serviceRepository.update(service)
+    fun updateService() = viewModelScope.launch {
+        serviceRepository.update(service.value)
     }
 
     fun deleteService(service: Service) = viewModelScope.launch {

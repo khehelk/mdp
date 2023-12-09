@@ -80,6 +80,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0-beta01")
 
+    implementation ("androidx.paging:paging-compose:3.2.1")
+    implementation ("androidx.paging:paging-runtime:3.2.1")
 
     //ROOM
     val room_version = "2.5.2"

@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,12 +34,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.myapplication.GlobalUser
+import com.example.myapplication.model.BasketService
+import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
+import com.example.myapplication.viewmodel.AppViewModelProvider
+import com.example.myapplication.viewmodel.BasketViewModel
+import com.example.myapplication.viewmodel.ServiceViewModel
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
-fun Service(item: Service){
+fun Service(navController: NavHostController, item: Service, basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory), serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    val user = GlobalUser.getInstance().getUser()
     Box(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
@@ -73,11 +90,30 @@ fun Service(item: Service){
                     .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
                 verticalArrangement = Arrangement.Top,
             ){
-                item.name?.let {
-                    Text(
-                        text = it,
-                        color = TextPrimary,
-                        style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = item.name,
+                    color = TextPrimary,
+                    style = MaterialTheme.typography.bodyMedium)
+                if(user?.role == RoleEnum.Admin){
+                    Button(
+                        onClick = {
+                            runBlocking {
+                                launch(Dispatchers.Default){
+                                    serviceViewModel.deleteService(item)
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = GreenBtn,
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(0.dp),
+                    ){
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                    }
                 }
             }
             Column(
@@ -93,7 +129,13 @@ fun Service(item: Service){
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        runBlocking{
+                            launch(Dispatchers.Default){
+                                basketViewModel.addToBasket(BasketService(basketViewModel.getUsersBasket(user?.userId!!).basketId!!, item.serviceId!!, 1))
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape),
@@ -104,6 +146,24 @@ fun Service(item: Service){
                     contentPadding = PaddingValues(0.dp),
                 ){
                     Text(text = "+")
+                }
+                if(user?.role == RoleEnum.Admin){
+                    Button(
+                        onClick = {
+                            serviceViewModel.service.value = item
+                            navController.navigate("add_service/${Gson().toJson(item)}")
+                        },
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = GreenBtn,
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(0.dp),
+                    ){
+                        Icon(imageVector = Icons.Default.Create, contentDescription = null)
+                    }
                 }
             }
         }
