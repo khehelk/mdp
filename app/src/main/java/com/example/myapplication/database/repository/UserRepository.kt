@@ -1,6 +1,6 @@
-package com.example.myapplication.repository
+package com.example.myapplication.database.repository
 
-import com.example.myapplication.dao.UserDao
+import com.example.myapplication.database.dao.UserDao
 import com.example.myapplication.model.User
 
 class UserRepository(private val userDao: UserDao) {

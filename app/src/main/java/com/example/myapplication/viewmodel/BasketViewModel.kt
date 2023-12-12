@@ -8,8 +8,8 @@ import com.example.myapplication.GlobalUser
 import com.example.myapplication.model.Basket
 import com.example.myapplication.model.BasketService
 import com.example.myapplication.model.BasketWithServices
-import com.example.myapplication.repository.BasketRepository
-import com.example.myapplication.repository.OrderRepository
+import com.example.myapplication.database.repository.BasketRepository
+import com.example.myapplication.database.repository.OrderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

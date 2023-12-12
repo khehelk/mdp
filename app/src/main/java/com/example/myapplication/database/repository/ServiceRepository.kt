@@ -1,9 +1,9 @@
-package com.example.myapplication.repository
+package com.example.myapplication.database.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.myapplication.dao.ServiceDao
+import com.example.myapplication.database.dao.ServiceDao
 import com.example.myapplication.model.Service
 import kotlinx.coroutines.flow.Flow
 

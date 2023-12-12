@@ -5,14 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.myapplication.dao.BasketDao
-import com.example.myapplication.dao.OrderDao
-import com.example.myapplication.dao.ServiceDao
-import com.example.myapplication.dao.UserDao
+import com.example.myapplication.database.dao.BasketDao
+import com.example.myapplication.database.dao.OrderDao
+import com.example.myapplication.database.dao.ServiceDao
+import com.example.myapplication.database.dao.UserDao
 import com.example.myapplication.model.Basket
 import com.example.myapplication.model.BasketService
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
+import com.example.myapplication.model.RemoteKeys
 import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.Service
 import com.example.myapplication.model.User
@@ -20,12 +21,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class], version = 7)
+@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 8)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun serviceDao(): ServiceDao
     abstract fun userDao(): UserDao
     abstract fun orderDao(): OrderDao
     abstract fun basketDao(): BasketDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
 
     companion object {
         private const val DB_NAME: String = "my-db"

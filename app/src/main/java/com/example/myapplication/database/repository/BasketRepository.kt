@@ -1,6 +1,6 @@
-package com.example.myapplication.repository
+package com.example.myapplication.database.repository
 
-import com.example.myapplication.dao.BasketDao
+import com.example.myapplication.database.dao.BasketDao
 import com.example.myapplication.model.Basket
 import com.example.myapplication.model.BasketService
 import com.example.myapplication.model.BasketWithServices

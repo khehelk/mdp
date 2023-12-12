@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.myapplication.R
 import com.example.myapplication.model.Service
-import com.example.myapplication.repository.ServiceRepository
+import com.example.myapplication.database.repository.ServiceRepository
 import kotlinx.coroutines.launch
 
 class ServiceViewModel(private val serviceRepository: ServiceRepository): ViewModel() {

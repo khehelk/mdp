@@ -1,6 +1,6 @@
-package com.example.myapplication.repository
+package com.example.myapplication.database.repository
 
-import com.example.myapplication.dao.OrderDao
+import com.example.myapplication.database.dao.OrderDao
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
 

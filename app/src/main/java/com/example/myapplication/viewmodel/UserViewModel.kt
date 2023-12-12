@@ -9,8 +9,8 @@ import com.example.myapplication.R
 import com.example.myapplication.model.Basket
 import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.User
-import com.example.myapplication.repository.BasketRepository
-import com.example.myapplication.repository.UserRepository
+import com.example.myapplication.database.repository.BasketRepository
+import com.example.myapplication.database.repository.UserRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepository, private val basketRepository: BasketRepository): ViewModel() {

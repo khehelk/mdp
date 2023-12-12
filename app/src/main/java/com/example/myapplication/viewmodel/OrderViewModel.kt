@@ -11,8 +11,8 @@ import com.example.myapplication.model.OrderService
 import com.example.myapplication.model.OrderWithServices
 import com.example.myapplication.model.Service
 import com.example.myapplication.model.UserWithOrder
-import com.example.myapplication.repository.BasketRepository
-import com.example.myapplication.repository.OrderRepository
+import com.example.myapplication.database.repository.BasketRepository
+import com.example.myapplication.database.repository.OrderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Date
