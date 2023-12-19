@@ -38,8 +38,8 @@ import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.UserViewModel
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.UserViewModel
 
 @Composable
 fun ProfileChange (navController: NavHostController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory)){

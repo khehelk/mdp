@@ -33,14 +33,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.ServiceViewModel
 import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.ServiceViewModel
 import kotlinx.coroutines.Dispatchers
 
 @Composable
@@ -188,7 +188,7 @@ fun AddService (navController: NavController, service: Service, serviceViewModel
         Button(
             onClick = {
                 if (create)
-                    serviceViewModel.createService()
+                    serviceViewModel.insertService()
                 else
                     serviceViewModel.service.let { serviceViewModel.updateService() }
                 navController.navigate(NavItem.ListOfServices.route)

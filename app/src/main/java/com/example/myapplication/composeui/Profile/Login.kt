@@ -29,16 +29,20 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.BasketViewModel
+import com.example.myapplication.businessLogic.viewmodel.UserViewModel
 import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextSecondary
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.UserViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun Login (navController: NavController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun Login (navController: NavController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory), basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,8 +102,10 @@ fun Login (navController: NavController, userViewModel: UserViewModel = viewMode
         }
         Button(
             onClick = {
-                userViewModel.authUser()
-                navController.navigate(NavItem.Profile.route)
+                CoroutineScope(Dispatchers.Main).launch {
+                    userViewModel.authUser()
+                    navController.navigate(NavItem.Profile.route)
+                }
             },
             modifier = Modifier
                 .height(60.dp)

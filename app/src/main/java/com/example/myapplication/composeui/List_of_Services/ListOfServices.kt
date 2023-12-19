@@ -7,19 +7,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.ServiceViewModel
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.BlueMain
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.ServiceViewModel
 
 @Composable
 fun ListOfServices(navController: NavHostController, serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    LaunchedEffect(serviceViewModel){
+        serviceViewModel.getServiceList()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

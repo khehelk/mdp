@@ -12,5 +12,6 @@ data class User(
     var email: String,
     var password: String,
     val role: RoleEnum,
-    val photo: Int? = null
+    val photo: Int? = null,
+    val basketId: Int? = null
 )

@@ -1,16 +1,18 @@
-package com.example.myapplication.viewmodel
+package com.example.myapplication.businessLogic.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.GlobalUser
 import com.example.myapplication.R
-import com.example.myapplication.model.Basket
+import com.example.myapplication.api.model.UserRemoteSignIn
+import com.example.myapplication.businessLogic.repository.BasketRepository
+import com.example.myapplication.businessLogic.repository.UserRepository
 import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.User
-import com.example.myapplication.database.repository.BasketRepository
-import com.example.myapplication.database.repository.UserRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepository, private val basketRepository: BasketRepository): ViewModel() {
@@ -19,32 +21,35 @@ class UserViewModel(private val userRepository: UserRepository, private val bask
     var email = mutableStateOf("")
     var password = mutableStateOf("")
     var photo = mutableIntStateOf(R.drawable.icon_profile)
+    var isLoggedIn by mutableStateOf(false)
+    var isBusy by mutableStateOf(false)
+//    private val _loggedUser = MutableStateFlow(User(null,"null","null","null","null",RoleEnum.User))
+//    val loggedUser: StateFlow<User> = _loggedUser.asStateFlow()
 
     fun createUser() = viewModelScope.launch {
-        var user = User(
+        val user = User(
             name = name.value,
             surname = surname.value,
             email = email.value,
             password = password.value,
-            role = RoleEnum.User
+            role = RoleEnum.User,
+            photo = R.drawable.icon_profile
         )
+//        isBusy = true
         userRepository.insert(user)
+//        isBusy = false
     }
 
     fun authUser() = viewModelScope.launch {
-        val user = userRepository.getUserByEmail(email.value)
-        if(password.value.isNotEmpty() && user.password == password.value){
-            val globalUser = GlobalUser.getInstance()
-            globalUser.setUser(user)
-            val basket = basketRepository.getUsersBasket(user.userId!!)
-            if(basket == null){
-                basketRepository.createBasket(Basket(null, user.userId))
-            }
-        }
+//        isBusy = true
+        val user = userRepository.authUser(UserRemoteSignIn(email.value, password.value))
+//        isLoggedIn = true
+//        isBusy = false
+        GlobalUser.getInstance().setUser(user)
     }
 
     fun updateUser() = viewModelScope.launch {
-        var updateUser = GlobalUser.getInstance().getUser()
+        val updateUser = GlobalUser.getInstance().getUser()
         if(email.value != "")
             updateUser?.email = email.value
         else
@@ -71,3 +76,4 @@ class UserViewModel(private val userRepository: UserRepository, private val bask
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()
     }
 }
+

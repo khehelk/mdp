@@ -1,20 +1,36 @@
 package com.example.myapplication.api
 
+import android.net.http.HttpException
+import android.os.Build
+import androidx.annotation.RequiresExtension
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
+import com.example.myapplication.api.model.toService
 import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.database.repository.RemoteKeysRepositoryImpl
+import com.example.myapplication.database.repository.ServiceRepositoryImpl
+import com.example.myapplication.model.RemoteKeyType
+import com.example.myapplication.model.RemoteKeys
+import com.example.myapplication.model.Service
+import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class ServiceRemoteMediator(
     private val service: ServerService,
-    private val sneakerRepository: SneakerRepoImpl,
+    private val serviceRepository: ServiceRepositoryImpl,
     private val database: AppDatabase,
     private val dbRemoteKeyRepository: RemoteKeysRepositoryImpl
-) : RemoteMediator<Int, Sneaker>() {
+) : RemoteMediator<Int, Service>() {
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, Sneaker>
+        state: PagingState<Int, Service>
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -36,25 +52,25 @@ class ServiceRemoteMediator(
         }
 
         try {
-            val sneakers = service.getSneakers(page, state.config.pageSize).map { it.toSneaker() }
-            val endOfPaginationReached = sneakers.isEmpty()
+            val services = service.getServices(page, state.config.pageSize).map { it.toService() }
+            val endOfPaginationReached = services.isEmpty()
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    dbRemoteKeyRepository.deleteRemoteKey(RemoteKeyType.SNEAKER)
-                    sneakerRepository.clearSneakers()
+                    dbRemoteKeyRepository.deleteRemoteKey(RemoteKeyType.SERVICE)
+                    serviceRepository.clearServices()
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
-                val keys = sneakers.map {
+                val keys = services.map {
                     RemoteKeys(
-                        entityId = it.sneakerId!!,
-                        type = RemoteKeyType.SNEAKER,
+                        entityId = it.serviceId!!,
+                        type = RemoteKeyType.SERVICE,
                         prevKey = prevKey,
                         nextKey = nextKey
                     )
                 }
                 dbRemoteKeyRepository.createRemoteKeys(keys)
-                sneakerRepository.insertSneakers(sneakers)
+                serviceRepository.insertServices(services)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: IOException) {
@@ -64,26 +80,26 @@ class ServiceRemoteMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Sneaker>): RemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Service>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
-            ?.let { sneaker ->
-                sneaker.sneakerId?.let { dbRemoteKeyRepository.getAllRemoteKeys(it, RemoteKeyType.SNEAKER) }
+            ?.let { service ->
+                service.serviceId?.let { dbRemoteKeyRepository.getAllRemoteKeys(it, RemoteKeyType.SERVICE) }
             }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Sneaker>): RemoteKeys? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Service>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-            ?.let { sneaker ->
-                sneaker.sneakerId?.let { dbRemoteKeyRepository.getAllRemoteKeys(it, RemoteKeyType.SNEAKER) }
+            ?.let { service ->
+                service.serviceId?.let { dbRemoteKeyRepository.getAllRemoteKeys(it, RemoteKeyType.SERVICE) }
             }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
-        state: PagingState<Int, Sneaker>
+        state: PagingState<Int, Service>
     ): RemoteKeys? {
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.sneakerId?.let { sneakerUid ->
-                dbRemoteKeyRepository.getAllRemoteKeys(sneakerUid, RemoteKeyType.SNEAKER)
+            state.closestItemToPosition(position)?.serviceId?.let { serviceUid ->
+                dbRemoteKeyRepository.getAllRemoteKeys(serviceUid, RemoteKeyType.SERVICE)
             }
         }
     }

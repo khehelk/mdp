@@ -1,4 +1,4 @@
-package com.example.myapplication.viewmodel
+package com.example.myapplication.businessLogic.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -6,13 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.GlobalUser
+import com.example.myapplication.businessLogic.repository.BasketRepository
+import com.example.myapplication.businessLogic.repository.OrderRepository
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
-import com.example.myapplication.model.OrderWithServices
 import com.example.myapplication.model.Service
-import com.example.myapplication.model.UserWithOrder
-import com.example.myapplication.database.repository.BasketRepository
-import com.example.myapplication.database.repository.OrderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -27,28 +25,23 @@ class OrderViewModel(private val orderRepository: OrderRepository, private val b
         val userId = GlobalUser.getInstance().getUser()?.userId!!
         val order = Order(
             date = Date().time,
-            total = getTotal(basketRepository.getUsersBasket(userId).basketId!!),
-            creatorUserId = GlobalUser.getInstance().getUser()?.userId!!
+            total = getTotal(userId),
+            creatorUserId = userId
         )
 
         var orderId = orderRepository.insert(order)
 
         for(service in selectedItems.value!!){
-            val quantity = basketRepository.getQuantity(basketRepository.getUsersBasket(userId).basketId!!, service.serviceId!!)
-            val orderService = OrderService( orderId.toInt(), service.serviceId!!, quantity!!)
-            if (orderService != null) {
-                orderRepository.insertOrderService(orderService)
-            }
+            val orderService = OrderService( orderId.toInt(), service.serviceId!!, 1)
+            orderRepository.addServiceToOrder(orderService)
         }
-
-        basketRepository.clearBasket(basketRepository.getUsersBasket(userId).basketId!!)
     }
 
-    fun getOrderWithServices(id: Int) : Flow<OrderWithServices> {
-        return orderRepository.getOrderWithServices(id)
+    suspend fun getOrderWithServices(id: Int) : Flow<List<Service>> {
+        return orderRepository.getServiceFromOrder(id)
     }
 
-    fun getUserOrders(id: Int): Flow<UserWithOrder> {
+    suspend fun getUserOrders(id: Int): Flow<List<Order>> {
         return orderRepository.getUserOrders(id)
     }
 
@@ -65,6 +58,6 @@ class OrderViewModel(private val orderRepository: OrderRepository, private val b
     }
 
     suspend fun getTotal(basketId: Int): Double {
-        return basketRepository.getTotalPriceForBasket(basketId) ?: 0.00
+        return basketRepository.getTotalPriceForUser(basketId) ?: 0.00
     }
 }

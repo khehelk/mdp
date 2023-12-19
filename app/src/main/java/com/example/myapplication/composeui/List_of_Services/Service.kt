@@ -25,6 +25,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,25 +37,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.GlobalUser
-import com.example.myapplication.model.BasketService
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.BasketViewModel
+import com.example.myapplication.businessLogic.viewmodel.ServiceViewModel
+import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.Service
 import com.example.myapplication.ui.theme.GreenBtn
 import com.example.myapplication.ui.theme.TextPrimary
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.BasketViewModel
-import com.example.myapplication.viewmodel.ServiceViewModel
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun Service(navController: NavHostController, item: Service, basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory), serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     val user = GlobalUser.getInstance().getUser()
+    val basketId by basketViewModel.basketId.collectAsState()
+    LaunchedEffect(basketViewModel){
+        if(user!=null && basketId == 0) basketViewModel.getUsersBasket(user.userId!!)
+    }
     Box(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
@@ -97,10 +103,8 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
                 if(user?.role == RoleEnum.Admin){
                     Button(
                         onClick = {
-                            runBlocking {
-                                launch(Dispatchers.Default){
-                                    serviceViewModel.deleteService(item)
-                                }
+                            basketViewModel.viewModelScope.launch {
+                                serviceViewModel.deleteService(item)
                             }
                         },
                         modifier = Modifier
@@ -130,11 +134,12 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
                 )
                 Button(
                     onClick = {
-                        runBlocking{
-                            launch(Dispatchers.Default){
-                                basketViewModel.addToBasket(BasketService(basketViewModel.getUsersBasket(user?.userId!!).basketId!!, item.serviceId!!, 1))
-                            }
+                        if(user != null)
+                        basketViewModel.viewModelScope.launch {
+                            basketViewModel.addToBasket(item.serviceId!!, 1)
                         }
+                        else
+                            navController.navigate(NavItem.Login.route)
                     },
                     modifier = Modifier
                         .size(42.dp)

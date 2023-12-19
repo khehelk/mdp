@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.myapplication.database.dao.BasketDao
 import com.example.myapplication.database.dao.OrderDao
+import com.example.myapplication.database.dao.RemoteKeysDao
 import com.example.myapplication.database.dao.ServiceDao
 import com.example.myapplication.database.dao.UserDao
 import com.example.myapplication.model.Basket
@@ -21,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 8)
+@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 9)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun serviceDao(): ServiceDao
     abstract fun userDao(): UserDao

@@ -6,7 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 
 enum class RemoteKeyType(private val type: String) {
-    SNEAKER(Service::class.simpleName ?: "Sneaker");
+    SERVICE(Service::class.simpleName ?: "Service");
     @TypeConverter
     fun toRemoteKeyType(value: String) = RemoteKeyType.values().first { it.type == value }
     @TypeConverter

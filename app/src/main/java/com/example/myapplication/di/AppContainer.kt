@@ -1,9 +1,9 @@
 package com.example.myapplication.di
 
-import com.example.myapplication.database.repository.BasketRepository
-import com.example.myapplication.database.repository.OrderRepository
-import com.example.myapplication.database.repository.ServiceRepository
-import com.example.myapplication.database.repository.UserRepository
+import com.example.myapplication.businessLogic.repository.BasketRepository
+import com.example.myapplication.businessLogic.repository.OrderRepository
+import com.example.myapplication.businessLogic.repository.ServiceRepository
+import com.example.myapplication.businessLogic.repository.UserRepository
 
 interface AppContainer {
     val serviceRepo: ServiceRepository

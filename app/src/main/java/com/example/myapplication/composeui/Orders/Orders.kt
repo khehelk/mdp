@@ -15,10 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.GlobalUser
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.OrderViewModel
 import com.example.myapplication.model.Order
 import com.example.myapplication.ui.theme.BlueMain
-import com.example.myapplication.viewmodel.AppViewModelProvider
-import com.example.myapplication.viewmodel.OrderViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,7 +30,7 @@ fun Orders (navController: NavController, orderViewModel: OrderViewModel = viewM
         withContext(Dispatchers.IO) {
             orderViewModel.getUserOrders(user?.userId!!).collect { data ->
                 ordersList.clear()
-                ordersList.addAll(data.orders)
+                ordersList.addAll(data)
             }
         }
     }
