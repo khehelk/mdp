@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class RestOrderRepository(private val server: ServerService): OrderRepository {
-    override suspend fun insert(order: Order): Long {
-        return server.createOrder(order.toOrderRemote())
+    override suspend fun insert(order: Order) {
+        server.createOrder(order.toOrderRemote())
     }
 
     override suspend fun addServiceToOrder(orderService: OrderService) {

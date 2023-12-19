@@ -6,7 +6,7 @@ import com.example.myapplication.model.Service
 import kotlinx.coroutines.flow.Flow
 
 interface OrderRepository {
-    suspend fun insert(order: Order): Long
+    suspend fun insert(order: Order)
     suspend fun addServiceToOrder(orderService: OrderService)
     suspend fun delete(order: Order)
     suspend fun getServiceFromOrder(id: Int): Flow<List<Service>>

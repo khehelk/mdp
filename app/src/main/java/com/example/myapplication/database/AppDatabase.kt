@@ -15,7 +15,6 @@ import com.example.myapplication.model.BasketService
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
 import com.example.myapplication.model.RemoteKeys
-import com.example.myapplication.model.RoleEnum
 import com.example.myapplication.model.Service
 import com.example.myapplication.model.User
 import kotlinx.coroutines.CoroutineScope
@@ -37,15 +36,15 @@ abstract class AppDatabase : RoomDatabase(){
         private var INSTANCE: AppDatabase? = null
 
         suspend fun populateDatabase() {
-            INSTANCE?.let { database ->
-                // User
-                val userDao = database.userDao()
-                val user1 = User(null, "Danil", "Markov", "danil@mail.ru", "123", RoleEnum.Admin)
-                userDao.insert(user1)
-                val basketDao = database.basketDao()
-                val basket1 = Basket(null, user1.userId!!)
-                basketDao.insert(basket1)
-            }
+//            INSTANCE?.let { database ->
+//                // User
+//                val userDao = database.userDao()
+//                val user1 = User(null, "Danil", "Markov", "danil@mail.ru", "123", RoleEnum.Admin)
+//                userDao.insert(user1)
+//                val basketDao = database.basketDao()
+//                val basket1 = Basket(null, user1.userId!!)
+//                basketDao.insert(basket1)
+//            }
         }
 
         fun getInstance(appContext: Context): AppDatabase {

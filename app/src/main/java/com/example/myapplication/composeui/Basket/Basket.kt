@@ -31,6 +31,7 @@ import com.example.myapplication.GlobalUser
 import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
 import com.example.myapplication.businessLogic.viewmodel.BasketViewModel
 import com.example.myapplication.businessLogic.viewmodel.OrderViewModel
+import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.Profile.Login
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
@@ -90,6 +91,7 @@ fun Basket(navController : NavHostController,
                 Button(
                     onClick = {
                         orderViewModel.createOrder()
+                        navController.navigate(NavItem.Orders.route)
                     },
                     modifier = Modifier
                         .height(60.dp)

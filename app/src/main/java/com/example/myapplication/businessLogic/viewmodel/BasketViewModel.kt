@@ -128,6 +128,7 @@ class BasketViewModel(private val basketRepository: BasketRepository, private va
     }
 
     suspend fun getTotal(userId: Int): Double {
-        return basketRepository.getTotalPriceForUser(userId) ?: 0.00
+        val price = basketRepository.getTotalPriceForUser(userId) ?: 0.00
+        return price
     }
 }

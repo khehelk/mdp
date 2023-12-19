@@ -9,7 +9,6 @@ import com.example.myapplication.GlobalUser
 import com.example.myapplication.businessLogic.repository.BasketRepository
 import com.example.myapplication.businessLogic.repository.OrderRepository
 import com.example.myapplication.model.Order
-import com.example.myapplication.model.OrderService
 import com.example.myapplication.model.Service
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -28,13 +27,7 @@ class OrderViewModel(private val orderRepository: OrderRepository, private val b
             total = getTotal(userId),
             creatorUserId = userId
         )
-
-        var orderId = orderRepository.insert(order)
-
-        for(service in selectedItems.value!!){
-            val orderService = OrderService( orderId.toInt(), service.serviceId!!, 1)
-            orderRepository.addServiceToOrder(orderService)
-        }
+        orderRepository.insert(order)
     }
 
     suspend fun getOrderWithServices(id: Int) : Flow<List<Service>> {

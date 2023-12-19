@@ -124,7 +124,7 @@ interface ServerService {
     @POST("order/create")
     suspend fun createOrder(
         @Body order: OrderRemote
-    ): Long
+    )
 
     @GET("order/getUserOrders/{userId}")
     suspend fun getUserOrders(
