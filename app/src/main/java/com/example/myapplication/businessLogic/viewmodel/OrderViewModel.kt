@@ -11,6 +11,8 @@ import com.example.myapplication.businessLogic.repository.OrderRepository
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.Service
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -19,23 +21,32 @@ class OrderViewModel(private val orderRepository: OrderRepository, private val b
     val selectedItems get() = _selectedItems
     private val _total = mutableDoubleStateOf(0.00)
     val total: State<Double> get() = _total
-
-    fun createOrder() = viewModelScope.launch {
-        val userId = GlobalUser.getInstance().getUser()?.userId!!
-        val order = Order(
-            date = Date().time,
-            total = getTotal(userId),
-            creatorUserId = userId
-        )
-        orderRepository.insert(order)
+    private var _orders = MutableStateFlow<List<Order>>(emptyList())
+    val orders: StateFlow<List<Order>> get() = _orders
+    fun createOrder(): Boolean {
+        viewModelScope.launch {
+            val userId = GlobalUser.getInstance().getUser()?.userId!!
+            val order = Order(
+                date = Date().time,
+                total = getTotal(userId),
+                creatorUserId = userId
+            )
+            orderRepository.insert(order)
+        }
+        return true
     }
 
     suspend fun getOrderWithServices(id: Int) : Flow<List<Service>> {
         return orderRepository.getServiceFromOrder(id)
     }
 
-    suspend fun getUserOrders(id: Int): Flow<List<Order>> {
-        return orderRepository.getUserOrders(id)
+    suspend fun getUserOrders(id: Int) {
+        viewModelScope.launch {
+            orderRepository.getUserOrders(id)
+                .collect{items ->
+                    _orders.value = items
+                }
+        }
     }
 
     fun updateSelectedItems(items: List<Service>) {

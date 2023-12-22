@@ -1,5 +1,7 @@
 package com.example.myapplication.composeui.Profile
 
+import android.view.Gravity
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -43,6 +46,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Login (navController: NavController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory), basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,6 +110,9 @@ fun Login (navController: NavController, userViewModel: UserViewModel = viewMode
                     userViewModel.authUser()
                     navController.navigate(NavItem.Profile.route)
                 }
+                val toast = Toast.makeText(context, "message", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.TOP, 0, 100)
+                toast.show()
             },
             modifier = Modifier
                 .height(60.dp)

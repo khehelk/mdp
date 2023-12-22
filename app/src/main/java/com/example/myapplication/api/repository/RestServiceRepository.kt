@@ -55,6 +55,9 @@ class RestServiceRepository(
     }
 
     override suspend fun delete(service: Service) {
-        service.serviceId?.let { this.service.deleteService(it) }
+        try {
+            service.serviceId?.let { this.service.deleteService(it) }
+            dbServiceRepository.invalidateService(service.serviceId!!)
+        }catch (ex: Exception){}
     }
 }

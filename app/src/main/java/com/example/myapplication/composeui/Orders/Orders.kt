@@ -7,8 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,21 +17,17 @@ import androidx.navigation.NavController
 import com.example.myapplication.GlobalUser
 import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
 import com.example.myapplication.businessLogic.viewmodel.OrderViewModel
-import com.example.myapplication.model.Order
 import com.example.myapplication.ui.theme.BlueMain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
 fun Orders (navController: NavController, orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)){
-    val ordersList = remember { mutableStateListOf<Order>() }
     val user = GlobalUser.getInstance().getUser()
+    val ordersList by orderViewModel.orders.collectAsState()
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            orderViewModel.getUserOrders(user?.userId!!).collect { data ->
-                ordersList.clear()
-                ordersList.addAll(data)
-            }
+            orderViewModel.getUserOrders(user?.userId!!)
         }
     }
     LazyColumn(

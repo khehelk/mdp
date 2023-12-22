@@ -34,12 +34,7 @@ class ServiceViewModel(private val serviceRepository: ServiceRepository): ViewMo
     }
 
     fun updateService() = viewModelScope.launch {
-        val service = Service(
-            name = name.value,
-            price = price.doubleValue,
-            photo = R.drawable.image_service
-        )
-        serviceRepository.update(service)
+        serviceRepository.update(service.value)
     }
 
     fun getServiceList(){

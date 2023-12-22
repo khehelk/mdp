@@ -27,4 +27,5 @@ class ServiceRepositoryImpl(private val serviceDao: ServiceDao): ServiceReposito
     suspend fun insertServices(services: List<Service>) =
         serviceDao.insert(*services.toTypedArray())
     fun getAllServicesPagingSource(): PagingSource<Int, Service> = serviceDao.getAll()
+    suspend fun invalidateService(id: Int) = serviceDao.invalidateService(id)
 }

@@ -24,4 +24,6 @@ interface ServiceDao {
     suspend fun getServiceById(id: Int): Service
     @Query("DELETE FROM tbl_service")
     suspend fun deleteAll()
+    @Query("DELETE FROM tbl_service WHERE serviceId = :id")
+    suspend fun invalidateService(id: Int)
 }

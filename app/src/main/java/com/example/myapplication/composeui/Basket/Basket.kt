@@ -91,7 +91,7 @@ fun Basket(navController : NavHostController,
                 Button(
                     onClick = {
                         orderViewModel.createOrder()
-                        navController.navigate(NavItem.Orders.route)
+                        navController.navigate(NavItem.ListOfServices.route)
                     },
                     modifier = Modifier
                         .height(60.dp)

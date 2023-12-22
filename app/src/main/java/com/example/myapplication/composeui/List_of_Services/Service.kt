@@ -61,7 +61,7 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
     }
     Box(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
+            .padding(10.dp, 0.dp, 10.dp, 10.dp)
             .height(150.dp)
             .shadow(
                 elevation = 4.dp,

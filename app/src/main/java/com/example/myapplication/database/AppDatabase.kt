@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 9)
+@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 10)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun serviceDao(): ServiceDao
     abstract fun userDao(): UserDao
