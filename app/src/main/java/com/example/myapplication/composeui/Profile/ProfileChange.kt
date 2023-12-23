@@ -1,6 +1,7 @@
 package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,12 +35,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.GlobalUser
 import com.example.myapplication.R
+import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
+import com.example.myapplication.businessLogic.viewmodel.UserViewModel
 import com.example.myapplication.composeui.Navbar.NavItem
 import com.example.myapplication.composeui.UIComponents.MyTextField
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
-import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
-import com.example.myapplication.businessLogic.viewmodel.UserViewModel
 
 @Composable
 fun ProfileChange (navController: NavHostController, userViewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory)){
@@ -52,6 +53,17 @@ fun ProfileChange (navController: NavHostController, userViewModel: UserViewMode
             .padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "PetMed",
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
+            )
+        }
         Box(modifier = Modifier
             .clip(CircleShape)
             .size(200.dp)

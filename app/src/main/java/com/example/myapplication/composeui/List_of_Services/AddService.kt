@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -56,10 +58,20 @@ fun AddService (navController: NavController, service: Service, serviceViewModel
         modifier = Modifier
             .fillMaxSize()
             .background(BlueMain)
-            .padding(15.dp)
-            .padding(bottom = 60.dp),
+            .padding(15.dp, 0.dp, 15.dp, 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "PetMed",
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
+            )
+        }
         Box(
             modifier = Modifier
                 .padding(0.dp, 0.dp, 0.dp, 10.dp)

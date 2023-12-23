@@ -1,9 +1,11 @@
 package com.example.myapplication.composeui.Profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.GlobalUser
@@ -46,6 +50,17 @@ fun Profile(navController: NavHostController){
             .padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "PetMed",
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
+            )
+        }
         Box(modifier = Modifier
             .clip(CircleShape)
             .size(200.dp)

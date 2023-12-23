@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -56,14 +58,25 @@ fun Basket(navController : NavHostController,
             modifier = Modifier
                 .fillMaxSize()
                 .background(BlueMain)
-                .padding(15.dp)
                 .padding(bottom = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(
+                    text = "PetMed",
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
+                )
+            }
             for (item in serviceList){
                 BasketItemUI(item = item)
             }
             Box(modifier = Modifier
+                .padding(15.dp, 0.dp)
                 .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                 .background(Color.Transparent)
                 .height(130.dp),

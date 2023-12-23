@@ -3,7 +3,9 @@ package com.example.myapplication.composeui.List_of_Services
 import SearchBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,40 +33,37 @@ fun ListOfServices(navController: NavHostController, serviceViewModel: ServiceVi
         serviceViewModel.getServiceList()
     }
     val services = serviceViewModel.serviceList.collectAsLazyPagingItems()
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 30.dp),
-        horizontalArrangement = Arrangement.Center
-    ){
-        Text(
-            text = "PetMed",
-            style = MaterialTheme.typography.bodyMedium
-                .copy(Color.White, fontSize = TextUnit(16.0f, TextUnitType.Em))
-        )
-    }
-    LazyColumn(
-        modifier = Modifier
-            .background(BlueMain)
-            .padding(bottom = 60.dp)
-    ){
-        item{
-            SearchBar(
-                modifier = Modifier)
-            {
-                    searchText ->
-                //TODO search logic
-            }
-        }
-        items(
-            count = services.itemCount,
-            key = services.itemKey { service -> service.serviceId!! }
+    Column(modifier = Modifier.background(BlueMain).fillMaxSize().padding(bottom = 60.dp)){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ){
-                index: Int ->
-            val service: Service? = services[index]
-            if (service != null){
-                Service(navController, item = service)
+            Text(
+                text = "PetMed",
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
+            )
+        }
+        LazyColumn(
+        ){
+            item{
+                SearchBar(
+                    modifier = Modifier)
+                {
+                        searchText ->
+                    //TODO search logic
+                }
+            }
+            items(
+                count = services.itemCount,
+                key = services.itemKey { service -> service.serviceId!! }
+            ){
+                    index: Int ->
+                val service: Service? = services[index]
+                if (service != null){
+                    Service(navController, item = service)
+                }
             }
         }
     }
