@@ -26,4 +26,6 @@ interface ServiceDao {
     suspend fun deleteAll()
     @Query("DELETE FROM tbl_service WHERE serviceId = :id")
     suspend fun invalidateService(id: Int)
+    @Query("SELECT * FROM tbl_service WHERE LOWER(name) LIKE '%' || LOWER(:searchString) || '%' ")
+    fun findServices(searchString: String): PagingSource<Int, Service>
 }

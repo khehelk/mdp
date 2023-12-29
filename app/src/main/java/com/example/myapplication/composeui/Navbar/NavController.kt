@@ -7,12 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myapplication.composeui.Basket.Basket
 import com.example.myapplication.composeui.List_of_Services.AddService
+import com.example.myapplication.composeui.List_of_Services.ChangeService
 import com.example.myapplication.composeui.List_of_Services.ListOfServices
 import com.example.myapplication.composeui.Orders.Orders
 import com.example.myapplication.composeui.Profile.Login
 import com.example.myapplication.composeui.Profile.Profile
 import com.example.myapplication.composeui.Profile.ProfileChange
 import com.example.myapplication.composeui.Profile.Registration
+import com.example.myapplication.composeui.Profile.Report
 import com.example.myapplication.model.Service
 import com.google.gson.Gson
 
@@ -60,11 +62,21 @@ fun NavController(navController : NavHostController){
         composable(
             NavItem.AddService.route
         ){
+            AddService(navController)
+        }
+        composable(
+            NavItem.ChangeService.route
+        ){
                 backStackEntry ->
             val serviceItemString = backStackEntry.arguments?.getString("serviceItem")
             val serviceItem = Gson().fromJson(serviceItemString, Service::class.java)
-            serviceItem?.let { AddService(navController, it)
+            serviceItem?.let { ChangeService(it, navController)
             }
+        }
+        composable(
+            NavItem.Report.route
+        ){
+            Report()
         }
     }
 }

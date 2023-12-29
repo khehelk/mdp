@@ -15,7 +15,7 @@ class RestUserRepository(
     }
 
     override suspend fun update(user: User) {
-        println()
+        service.updateUser(user.toUserRemote())
     }
 
     override suspend fun delete(user: User) {

@@ -28,4 +28,14 @@ class ServiceRepositoryImpl(private val serviceDao: ServiceDao): ServiceReposito
         serviceDao.insert(*services.toTypedArray())
     fun getAllServicesPagingSource(): PagingSource<Int, Service> = serviceDao.getAll()
     suspend fun invalidateService(id: Int) = serviceDao.invalidateService(id)
+    override fun call(str: String): Flow<PagingData<Service>> {
+        return Pager(
+            PagingConfig(
+                pageSize = AppContainer.LIMIT,
+                enablePlaceholders = false
+            ),
+        ) {
+            serviceDao.findServices(str)
+        }.flow
+    }
 }

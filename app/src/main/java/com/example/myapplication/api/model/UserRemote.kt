@@ -12,7 +12,7 @@ data class UserRemote (
     val email: String = "",
     val password: String = "",
     val role: RoleEnum = RoleEnum.User,
-    val photo: Int? = 0,
+    val photo: String = "",
     val basketId: Int? = 0
 )
 
@@ -24,7 +24,7 @@ fun UserRemote.toUser(): User = User(
     email,
     password,
     role,
-    photo,
+    RemoteConverters.toBitmap(photo),
     basketId
 )
 
@@ -35,6 +35,6 @@ fun User.toUserRemote():UserRemote = UserRemote(
     email,
     password,
     role,
-    photo,
+    RemoteConverters.fromBitmap(photo),
     basketId
 )

@@ -33,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,7 +53,12 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @Composable
-fun Service(navController: NavHostController, item: Service, basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory), serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun Service(
+    navController: NavHostController,
+    item: Service,
+    basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    serviceViewModel: ServiceViewModel = viewModel(factory = AppViewModelProvider.Factory)
+){
     val user = GlobalUser.getInstance().getUser()
     val basketId by basketViewModel.basketId.collectAsState()
     LaunchedEffect(basketViewModel){
@@ -78,9 +83,8 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
-            item.photo?.let { painterResource(id = it) }?.let {
                 Image(
-                    painter = it,
+                    bitmap = item.photo.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxHeight()
@@ -88,7 +92,6 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
                         .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
                     contentScale = ContentScale.FillHeight,
                 )
-            }
 
             Column(
                 modifier = Modifier
@@ -155,8 +158,7 @@ fun Service(navController: NavHostController, item: Service, basketViewModel: Ba
                 if(user?.role == RoleEnum.Admin){
                     Button(
                         onClick = {
-                            serviceViewModel.service.value = item
-                            navController.navigate("add_service/${Gson().toJson(item)}")
+                            navController.navigate("change_service/${Gson().toJson(item)}")
                         },
                         modifier = Modifier
                             .size(42.dp)

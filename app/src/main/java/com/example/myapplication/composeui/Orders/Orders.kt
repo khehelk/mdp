@@ -22,7 +22,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun Orders (navController: NavController, orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun Orders (
+    navController: NavController,
+    orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)
+){
     val user = GlobalUser.getInstance().getUser()
     val ordersList by orderViewModel.orders.collectAsState()
     LaunchedEffect(Unit) {

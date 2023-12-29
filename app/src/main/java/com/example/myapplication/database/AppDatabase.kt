@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.myapplication.database.dao.BasketDao
 import com.example.myapplication.database.dao.OrderDao
@@ -12,6 +13,7 @@ import com.example.myapplication.database.dao.ServiceDao
 import com.example.myapplication.database.dao.UserDao
 import com.example.myapplication.model.Basket
 import com.example.myapplication.model.BasketService
+import com.example.myapplication.model.Converters
 import com.example.myapplication.model.Order
 import com.example.myapplication.model.OrderService
 import com.example.myapplication.model.RemoteKeys
@@ -21,7 +23,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, Service::class, Order::class, OrderService::class, Basket::class, BasketService::class, RemoteKeys::class], version = 10)
+@Database(entities = [User::class,
+    Service::class,
+    Order::class,
+    OrderService::class,
+    Basket::class,
+    BasketService::class,
+    RemoteKeys::class], version = 14)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun serviceDao(): ServiceDao
     abstract fun userDao(): UserDao
@@ -36,15 +45,7 @@ abstract class AppDatabase : RoomDatabase(){
         private var INSTANCE: AppDatabase? = null
 
         suspend fun populateDatabase() {
-//            INSTANCE?.let { database ->
-//                // User
-//                val userDao = database.userDao()
-//                val user1 = User(null, "Danil", "Markov", "danil@mail.ru", "123", RoleEnum.Admin)
-//                userDao.insert(user1)
-//                val basketDao = database.basketDao()
-//                val basket1 = Basket(null, user1.userId!!)
-//                basketDao.insert(basket1)
-//            }
+
         }
 
         fun getInstance(appContext: Context): AppDatabase {

@@ -2,6 +2,7 @@ package com.example.myapplication.di
 
 import com.example.myapplication.businessLogic.repository.BasketRepository
 import com.example.myapplication.businessLogic.repository.OrderRepository
+import com.example.myapplication.businessLogic.repository.ReportRepository
 import com.example.myapplication.businessLogic.repository.ServiceRepository
 import com.example.myapplication.businessLogic.repository.UserRepository
 
@@ -10,6 +11,7 @@ interface AppContainer {
     val userRepo: UserRepository
     val orderRepo: OrderRepository
     val basketRepo: BasketRepository
+    val reportRepo: ReportRepository
 
     companion object {
         const val TIMEOUT = 5000L

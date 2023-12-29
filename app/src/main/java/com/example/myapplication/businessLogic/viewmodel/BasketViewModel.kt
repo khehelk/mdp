@@ -2,7 +2,6 @@ package com.example.myapplication.businessLogic.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.GlobalUser
 import com.example.myapplication.businessLogic.repository.BasketRepository
@@ -17,9 +16,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-data class ServiceWithQuantity(val service: Service, val quantityStateFlow: MutableStateFlow<Int>)
-
-class BasketViewModel(private val basketRepository: BasketRepository, private val orderRepository: OrderRepository) : ViewModel() {
+class BasketViewModel(
+    private val basketRepository: BasketRepository,
+    private val orderRepository: OrderRepository
+) : MyViewModel() {
     private val _quantityMap = MutableStateFlow<Map<Int, MutableStateFlow<Int>>>(emptyMap())
     val quantityMap: StateFlow<Map<Int, MutableStateFlow<Int>>> get() = _quantityMap
     private val _total = mutableDoubleStateOf(0.00)
@@ -28,6 +28,7 @@ class BasketViewModel(private val basketRepository: BasketRepository, private va
     val myList: StateFlow<List<Service>> get() = _myList
     private var _basketId = MutableStateFlow(0)
     val basketId: StateFlow<Int> get() = _basketId
+
     fun getQuantityState(basketId: Int, serviceId: Int): Flow<Int> {
         val quantityMap = _quantityMap.value.toMutableMap()
         val quantityStateFlow = quantityMap.getOrPut(serviceId) {
@@ -59,14 +60,13 @@ class BasketViewModel(private val basketRepository: BasketRepository, private va
         }
     }
 
-    fun getBasketServices() {
-        viewModelScope.launch {
-            val basketId = GlobalUser.getInstance().getUser()?.basketId!!
-            basketRepository.getBasketWithServices(basketId)
-                .collect{services ->
-                    _myList.value = services
-                }
-        }
+    fun getBasketServices() = viewModelScope.launch {
+        val userId = GlobalUser.getInstance().getUser()?.userId!!
+
+        basketRepository.getBasketWithServices(userId)
+            .collect{services ->
+                _myList.value = services
+            }
     }
 
     fun getUsersBasket(id: Int) {
@@ -91,34 +91,42 @@ class BasketViewModel(private val basketRepository: BasketRepository, private va
     }
 
     fun incrementServiceQuantity(basketId: Int, serviceId: Int) {
-        viewModelScope.launch {
-            basketRepository.incrementServiceQuantity(basketId, serviceId)
-            val currentQuantity = getQuantityState(basketId, serviceId).first()
-            _quantityMap.value.toMutableMap().apply {
-                put(serviceId, MutableStateFlow(currentQuantity + 1))
+        runInScope(
+            actionSuccess = {
+                basketRepository.incrementServiceQuantity(basketId, serviceId)
             }
-            updateSubTotal(GlobalUser.getInstance().getUser()?.userId!!)
+        )
+        var currentQuantity: Int = 0
+        viewModelScope.launch {
+            currentQuantity = getQuantityState(basketId, serviceId).first()
         }
+        _quantityMap.value.toMutableMap().apply {
+            put(serviceId, MutableStateFlow(currentQuantity + 1))
+        }
+        updateSubTotal(GlobalUser.getInstance().getUser()?.userId!!)
     }
 
-    fun decrementOrRemoveServiceQuantity(basketId: Int, serviceId: Int) {
-        viewModelScope.launch {
-            val currentQuantity = getQuantityState(basketId, serviceId).first()
-            if (currentQuantity > 1) {
-                basketRepository.decrementServiceQuantity(basketId, serviceId)
-                _quantityMap.value.toMutableMap().apply {
-                    put(serviceId, MutableStateFlow(currentQuantity - 1))
-                }
+    fun decrementOrRemoveServiceQuantity(basketId: Int, serviceId: Int) = viewModelScope.launch{
+        val currentQuantity = getQuantityState(basketId, serviceId).first()
+
+        if (currentQuantity > 1) {
+            runInScope(
+                actionSuccess = { basketRepository.decrementServiceQuantity(basketId, serviceId) }
+            )
+            _quantityMap.value.toMutableMap().apply {
+                put(serviceId, MutableStateFlow(currentQuantity - 1))
             }
-            else{
-                basketRepository.removeServiceFromBasket(basketId, serviceId)
-                _quantityMap.value.toMutableMap().apply {
-                    remove(serviceId, MutableStateFlow(currentQuantity - 1))
-                }
-                getBasketServices()
-            }
-            updateSubTotal(GlobalUser.getInstance().getUser()?.userId!!)
         }
+        else{
+            runInScope(
+                actionSuccess = { basketRepository.removeServiceFromBasket(basketId, serviceId) }
+            )
+            _quantityMap.value.toMutableMap().apply {
+                remove(serviceId, MutableStateFlow(currentQuantity - 1))
+            }
+            getBasketServices()
+        }
+        updateSubTotal(GlobalUser.getInstance().getUser()?.userId!!)
     }
 
     fun updateSubTotal(userId: Int) {

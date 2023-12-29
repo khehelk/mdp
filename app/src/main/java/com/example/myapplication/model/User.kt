@@ -1,5 +1,6 @@
 package com.example.myapplication.model
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -12,6 +13,6 @@ data class User(
     var email: String,
     var password: String,
     val role: RoleEnum,
-    val photo: Int? = null,
+    var photo: Bitmap,
     val basketId: Int? = null
 )

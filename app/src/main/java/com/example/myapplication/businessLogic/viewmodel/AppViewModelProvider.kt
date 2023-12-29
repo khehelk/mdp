@@ -12,13 +12,25 @@ object AppViewModelProvider {
             ServiceViewModel(app().container.serviceRepo)
         }
         initializer {
-            UserViewModel(app().container.userRepo, app().container.basketRepo)
+            UserViewModel(
+                app().container.userRepo,
+                app().container.basketRepo
+            )
         }
         initializer {
-            OrderViewModel(app().container.orderRepo, app().container.basketRepo)
+            OrderViewModel(
+                app().container.orderRepo,
+                app().container.basketRepo
+            )
         }
         initializer {
-            BasketViewModel(app().container.basketRepo, app().container.orderRepo,)
+            BasketViewModel(
+                app().container.basketRepo,
+                app().container.orderRepo,
+                )
+        }
+        initializer {
+            ReportViewModel(app().container.reportRepo)
         }
     }
 }

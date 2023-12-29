@@ -8,19 +8,19 @@ data class ServiceRemote (
     val id: Int? = 0,
     val name: String = "",
     val price: Double = 0.0,
-    val photo: Int? = 0
+    val photo: String = ""
 )
 
 fun ServiceRemote.toService(): Service = Service(
     id,
     name,
     price,
-    photo
+    RemoteConverters.toBitmap(photo)
 )
 
 fun Service.toServiceRemote():ServiceRemote = ServiceRemote(
     serviceId,
     name,
     price,
-    photo
+    RemoteConverters.fromBitmap(photo)
 )

@@ -1,5 +1,6 @@
 package com.example.myapplication.composeui.Profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -66,7 +68,11 @@ fun Profile(navController: NavHostController){
             .size(200.dp)
             .background(Color.White)
         ){
-            // TODO: upload profile image
+            Image(
+                bitmap = user.photo.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.Center),
+            )
         }
             Box(modifier = Modifier.padding(15.dp)){
                 Text(
@@ -129,7 +135,7 @@ fun Profile(navController: NavHostController){
         }
         if(user.role == RoleEnum.Admin){
             Button(
-                onClick = { navController.navigate("add_service/{}") },
+                onClick = { navController.navigate(NavItem.AddService.route) },
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
@@ -143,6 +149,25 @@ fun Profile(navController: NavHostController){
             ) {
                 Text(
                     text = "Add service",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
+                )
+            }
+            Button(
+                onClick = { navController.navigate(NavItem.Report.route) },
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clip(CircleShape)
+                    .padding(vertical = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = GreenBtn,
+                    contentColor = Color.White
+                ),
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                Text(
+                    text = "Reports",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )

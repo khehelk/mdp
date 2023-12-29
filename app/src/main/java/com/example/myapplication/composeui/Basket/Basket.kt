@@ -1,5 +1,6 @@
 package com.example.myapplication.composeui.Basket
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,16 +25,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.GlobalUser
+import com.example.myapplication.api.ApiStatus
 import com.example.myapplication.businessLogic.viewmodel.AppViewModelProvider
 import com.example.myapplication.businessLogic.viewmodel.BasketViewModel
 import com.example.myapplication.businessLogic.viewmodel.OrderViewModel
 import com.example.myapplication.composeui.Navbar.NavItem
+import com.example.myapplication.composeui.NetworkUI.Loading
 import com.example.myapplication.composeui.Profile.Login
 import com.example.myapplication.ui.theme.BlueMain
 import com.example.myapplication.ui.theme.GreenBtn
@@ -41,85 +45,100 @@ import com.example.myapplication.ui.theme.GreenBtn
 @Composable
 fun Basket(navController : NavHostController,
            basketViewModel: BasketViewModel = viewModel(factory = AppViewModelProvider.Factory),
-           orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+           orderViewModel: OrderViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val user = GlobalUser.getInstance().getUser()
-
-    if (user == null){
-        Login(navController = navController)
-    }else{
-        basketViewModel.updateSubTotal(user.userId!!)
-        val total = basketViewModel.total.value
-        LaunchedEffect(basketViewModel){
-             basketViewModel.getBasketServices()
-        }
-        val serviceList by basketViewModel.myList.collectAsState()
-        orderViewModel.updateSelectedItems(serviceList)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BlueMain)
-                .padding(bottom = 60.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(
-                    text = "PetMed",
-                    style = MaterialTheme.typography.bodyMedium
-                        .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
-                )
-            }
-            for (item in serviceList){
-                BasketItemUI(item = item)
-            }
-            Box(modifier = Modifier
-                .padding(15.dp, 0.dp)
-                .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
-                .background(Color.Transparent)
-                .height(130.dp),
-            ){
-                Column (modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.White)
-                    .padding(PaddingValues(15.dp)),
-                ){
-                    Row (
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ){
+    val context = LocalContext.current
+    if (basketViewModel.apiStatus == ApiStatus.ERROR) {
+        Toast.makeText(context, "Error: " + basketViewModel.apiError, Toast.LENGTH_SHORT).show()
+        return
+    }
+    when (basketViewModel.apiStatus) {
+        ApiStatus.LOADING -> Loading()
+        ApiStatus.DONE ->
+            if (user == null) {
+                Login(navController = navController)
+            } else {
+                basketViewModel.updateSubTotal(user.userId!!)
+                val total = basketViewModel.total.value
+                LaunchedEffect(basketViewModel) {
+                    basketViewModel.getBasketServices()
+                }
+                val serviceList by basketViewModel.myList.collectAsState()
+                orderViewModel.updateSelectedItems(serviceList)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(BlueMain)
+                        .padding(bottom = 60.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Text(
-                            text = "Total: ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "$$total",
+                            text = "PetMed",
                             style = MaterialTheme.typography.bodyMedium
+                                .copy(Color.White, fontSize = TextUnit(8.0f, TextUnitType.Em))
                         )
                     }
-                }
-                Button(
-                    onClick = {
-                        orderViewModel.createOrder()
-                        navController.navigate(NavItem.ListOfServices.route)
-                    },
-                    modifier = Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .clip(CircleShape)
-                        .align(Alignment.BottomCenter),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = GreenBtn,
-                        contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Text(text = "Confirm order", style = MaterialTheme.typography.bodyMedium.copy(Color.White))
+                    for (item in serviceList) {
+                        BasketItemUI(item = item)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(15.dp, 0.dp)
+                            .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+                            .background(Color.Transparent)
+                            .height(130.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .background(Color.White)
+                                .padding(PaddingValues(15.dp)),
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(
+                                    text = "Total: ",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "$$total",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                        Button(
+                            onClick = {
+                                orderViewModel.createOrder()
+                                navController.navigate(NavItem.ListOfServices.route)
+                            },
+                            modifier = Modifier
+                                .height(60.dp)
+                                .fillMaxWidth()
+                                .clip(CircleShape)
+                                .align(Alignment.BottomCenter),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = GreenBtn,
+                                contentColor = Color.White
+                            ),
+                            contentPadding = PaddingValues(0.dp),
+                        ) {
+                            Text(
+                                text = "Confirm order",
+                                style = MaterialTheme.typography.bodyMedium.copy(Color.White)
+                            )
+                        }
+                    }
                 }
             }
-        }
+
+        else -> {}
     }
 }

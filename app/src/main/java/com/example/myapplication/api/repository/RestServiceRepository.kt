@@ -60,4 +60,9 @@ class RestServiceRepository(
             dbServiceRepository.invalidateService(service.serviceId!!)
         }catch (ex: Exception){}
     }
+
+    override fun call(str: String): Flow<PagingData<Service>> {
+        return dbServiceRepository.call(str)
+    }
+
 }

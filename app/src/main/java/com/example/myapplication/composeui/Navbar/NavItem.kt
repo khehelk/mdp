@@ -36,7 +36,15 @@ sealed class NavItem(
         R.drawable.icon_profile
     )
     object AddService : NavItem(
-        "add_service/{serviceItem}",
+        "add_service",
         R.drawable.icon_list_of_services
+    )
+    object ChangeService : NavItem(
+        "change_service/{serviceItem}",
+        R.drawable.icon_list_of_services
+    )
+    object Report : NavItem(
+        "report",
+        R.drawable.profile
     )
 }

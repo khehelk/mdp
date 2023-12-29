@@ -3,6 +3,7 @@ package com.example.myapplication.api
 import com.example.myapplication.api.model.BasketServiceRemote
 import com.example.myapplication.api.model.OrderRemote
 import com.example.myapplication.api.model.OrderServiceRemote
+import com.example.myapplication.api.model.ReportRemote
 import com.example.myapplication.api.model.ServiceRemote
 import com.example.myapplication.api.model.UserRemote
 import com.example.myapplication.api.model.UserRemoteSignIn
@@ -10,6 +11,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -20,7 +23,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ServerService {
-    //SNEAKER
+    // Service
     @GET("service/get/{id}")
     suspend fun getService(
         @Path("id") id: Int,
@@ -46,7 +49,7 @@ interface ServerService {
     @DELETE("service/delete/{id}")
     suspend fun deleteService(
         @Path("id") id: Int
-    )
+    ): Response<String>
 
     //USER
     @POST("user/signup")
@@ -57,6 +60,11 @@ interface ServerService {
     @POST("user/signin")
     suspend fun SignIn(
         @Body user: UserRemoteSignIn
+    ): UserRemote
+
+    @PUT("user/update")
+    suspend fun updateUser(
+        @Body user: UserRemote
     ): UserRemote
 
     //BASKET
@@ -140,6 +148,14 @@ interface ServerService {
     suspend fun deleteOrder(
         @Path("orderId") orderId: Int
     )
+
+    //REPORT
+    @GET("report/getReport/{dateFrom}/{dateTo}")
+    suspend fun getReport(
+        @Path("dateFrom") dateFrom: Long,
+        @Path("dateTo") dateTo: Long
+    ): ReportRemote
+
     companion object {
         private const val BASE_URL = "https://ftkfjb1l-8080.euw.devtunnels.ms/api/"
 
@@ -148,7 +164,10 @@ interface ServerService {
 
         fun getInstance(): ServerService {
             return INSTANCE ?: synchronized(this) {
+                val logger = HttpLoggingInterceptor()
+                logger.level = HttpLoggingInterceptor.Level.BASIC
                 val client = OkHttpClient.Builder()
+                    .addInterceptor(logger)
                     .build()
                 return Retrofit.Builder()
                     .baseUrl(BASE_URL)

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.BlueBorder
 import com.example.myapplication.ui.theme.TextSecondary
@@ -28,6 +29,7 @@ import com.example.myapplication.ui.theme.TextSecondary
 @Composable
 fun MyTextField (
     label: String,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     onValueChanged: (String) -> Unit,
 ){
     val textState = remember { mutableStateOf(TextFieldValue()) }
@@ -48,8 +50,6 @@ fun MyTextField (
                 text = label,
                 style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
             )
-        }else{
-
         }
         BasicTextField(
             value = text,
@@ -57,6 +57,7 @@ fun MyTextField (
                 textState.value = it
                 onValueChanged(it.text)
             },
+            visualTransformation = visualTransformation,
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium,
             singleLine = true,

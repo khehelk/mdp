@@ -4,10 +4,12 @@ import android.content.Context
 import com.example.myapplication.api.ServerService
 import com.example.myapplication.api.repository.RestBasketRepository
 import com.example.myapplication.api.repository.RestOrderRepository
+import com.example.myapplication.api.repository.RestReportRepository
 import com.example.myapplication.api.repository.RestServiceRepository
 import com.example.myapplication.api.repository.RestUserRepository
 import com.example.myapplication.businessLogic.repository.BasketRepository
 import com.example.myapplication.businessLogic.repository.OrderRepository
+import com.example.myapplication.businessLogic.repository.ReportRepository
 import com.example.myapplication.businessLogic.repository.ServiceRepository
 import com.example.myapplication.businessLogic.repository.UserRepository
 import com.example.myapplication.database.AppDatabase
@@ -31,6 +33,9 @@ class AppDataContainer(context: Context) : AppContainer {
     }
     override val basketRepo: BasketRepository by lazy{
         RestBasketRepository(ServerService.getInstance())
+    }
+    override val reportRepo: ReportRepository by lazy{
+        RestReportRepository(ServerService.getInstance())
     }
 
     private val serviceRepository: ServiceRepositoryImpl by lazy {

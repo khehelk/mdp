@@ -1,5 +1,6 @@
 package com.example.myapplication.model
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -9,5 +10,5 @@ data class Service (
     var serviceId: Int? = null,
     var name: String,
     var price: Double,
-    var photo: Int? = null
+    var photo: Bitmap
 )

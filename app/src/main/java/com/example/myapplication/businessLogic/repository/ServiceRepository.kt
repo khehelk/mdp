@@ -10,4 +10,5 @@ interface ServiceRepository {
     suspend fun delete(service: Service)
     suspend fun getServiceById(id: Int): Service
     suspend fun getAllServices(): Flow<PagingData<Service>>
+    fun call(str: String): Flow<PagingData<Service>>
 }

@@ -15,10 +15,10 @@ import com.example.myapplication.ui.theme.BlueMain
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //this.deleteDatabase("my-db")
         setContent {
             AppTheme (darkTheme = false){
                 // A surface container using the 'background' color from the theme
-
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()

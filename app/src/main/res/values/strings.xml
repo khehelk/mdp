@@ -2,4 +2,6 @@
     <string name="app_name">PetMed</string>
     <string name="not_auth_error">Please login</string>
     <string name="placeholder_search">Search…</string>
+    <string name="loading">Loading...</string>
+    <string name="back">Return</string>
 </resources>

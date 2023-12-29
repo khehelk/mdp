@@ -29,9 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,9 +69,8 @@ fun BasketItemUI(item: Service, basketViewModel: BasketViewModel = viewModel(fac
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            item.photo?.let { painterResource(id = it) }?.let {
                 Image(
-                    painter = it,
+                    bitmap = item.photo.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxHeight()
@@ -79,7 +78,6 @@ fun BasketItemUI(item: Service, basketViewModel: BasketViewModel = viewModel(fac
                         .widthIn(max = (LocalConfiguration.current.screenWidthDp / 3).dp),
                     contentScale = ContentScale.FillHeight,
                 )
-            }
 
             Column(
                 modifier = Modifier
